@@ -12,6 +12,6 @@ public class Book {
     @Id
     private int bookId;
     private String bookName;
-    private String bookDesc;
+    private String bookDescription;
     private int publicationYear;
 }
