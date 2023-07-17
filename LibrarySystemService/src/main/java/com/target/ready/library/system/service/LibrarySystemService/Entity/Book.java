@@ -2,8 +2,12 @@ package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,4 +18,5 @@ public class Book {
     private String bookName;
     private String bookDescription;
     private int publicationYear;
+
 }
