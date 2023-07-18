@@ -22,4 +22,9 @@ public class LibraryService {
     public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
+
+    public String addBook(Book book){
+       bookRepository.save(book);
+       return "Book Added Successfully";
+    }
 }

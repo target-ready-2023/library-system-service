@@ -5,10 +5,7 @@ import com.target.ready.library.system.service.LibrarySystemService.Entity.Categ
 import com.target.ready.library.system.service.LibrarySystemService.Service.LibraryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +21,9 @@ public class LibrarySystemController {
     public List<Book> getAllBooks(){
         return libraryService.getAllBooks();
     }
+
+    @PostMapping("addBook")
+    public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
 
 
 }
