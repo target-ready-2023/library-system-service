@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: library_service_api
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
+    username: postgres
+    password: ${DB_PASSWORD}
+  
+   
+
