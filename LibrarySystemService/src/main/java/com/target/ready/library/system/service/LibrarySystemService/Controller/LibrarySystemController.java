@@ -40,8 +40,8 @@ public class LibrarySystemController {
     public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
 
     @DeleteMapping("book/{bookId}")
-    public void deleteBook(@PathVariable int bookId) {
-        libraryService.deleteBook(bookId);
+    public String deleteBook(@PathVariable int bookId) {
+       return libraryService.deleteBook(bookId);
     }
 
     @GetMapping("book/{bookId}")
