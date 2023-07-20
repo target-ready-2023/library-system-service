@@ -39,9 +39,9 @@ public class LibrarySystemController {
     @PostMapping("inventory/books")
     public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
 
-    @DeleteMapping("deleteBook/{id}")
-    public void deleteBook(@PathVariable int id) {
-        libraryService.deleteBook(id);
+    @DeleteMapping("book/{bookId}")
+    public void deleteBook(@PathVariable int bookId) {
+        libraryService.deleteBook(bookId);
     }
 
     @GetMapping("book/{bookId}")

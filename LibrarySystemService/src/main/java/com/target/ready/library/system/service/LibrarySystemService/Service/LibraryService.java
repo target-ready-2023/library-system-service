@@ -34,8 +34,8 @@ public class LibraryService {
         return "Book Added Successfully";
     }
 
-    public void deleteBook(int id) {
-        bookRepository.deleteById(id);
+    public void deleteBook(int bookId) {
+        bookRepository.deleteById(bookId);
     }
 
     public Book findByBookId(int bookId) {
