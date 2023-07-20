@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class LibraryService {
     AuthorRepository authorRepository;
-    BookRepository bookRepository;
+    static BookRepository bookRepository;
     CategoryRepository categoryRepository;
     public LibraryService(BookRepository bookRepository,CategoryRepository categoryRepository){
         this.bookRepository=bookRepository;
@@ -27,4 +27,9 @@ public class LibraryService {
        bookRepository.save(book);
        return "Book Added Successfully";
     }
+
+    public static void deleteBook(int id) {
+        bookRepository.deleteById(id);
+    }
+
 }

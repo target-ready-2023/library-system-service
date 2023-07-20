@@ -23,7 +23,12 @@ public class LibrarySystemController {
     }
 
     @PostMapping("addBook")
-    public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
+    public String addBook(@RequestBody Book book) {return libraryService.addBook(book);}
+
+    @DeleteMapping("deleteBook/{id}")
+    public void deleteBook(@PathVariable int id) {
+        LibraryService.deleteBook(id);
+    }
 
 
 }
