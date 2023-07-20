@@ -34,4 +34,7 @@ public class LibraryService {
         return "Book Added Successfully";
     }
 
+    public Book findByBookId(int bookId) {
+        return bookRepository.findById(bookId).orElse(null);
+    }
 }

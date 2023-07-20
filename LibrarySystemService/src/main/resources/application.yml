@@ -11,8 +11,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
     username: postgres
-
-    password: Jahnavi@2002
+    password: {DB_PASSWORD}
 
   jpa:
     generate-ddl: 'false'

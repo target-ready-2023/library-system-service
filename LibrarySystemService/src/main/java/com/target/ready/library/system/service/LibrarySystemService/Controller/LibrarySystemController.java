@@ -36,8 +36,12 @@ public class LibrarySystemController {
         }
     }
 
-    @PostMapping("inventory/book")
+    @PostMapping("inventory/books")
     public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
 
+    @GetMapping("book/{bookId}")
+    public Book findByBookId(@PathVariable int bookId){
+        return libraryService.findByBookId(bookId);
+    }
 
 }
