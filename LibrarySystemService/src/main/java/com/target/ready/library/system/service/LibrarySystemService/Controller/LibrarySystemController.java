@@ -36,5 +36,8 @@ public class LibrarySystemController {
         }
     }
 
+    @PostMapping("addBook")
+    public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
+
 
 }
