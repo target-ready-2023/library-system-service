@@ -22,8 +22,9 @@ public class LibrarySystemController {
         return libraryService.getAllBooks();
     }
 
-    @PostMapping("addBook")
+    @PostMapping("inventory/books")
     public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
+
 
 
 }

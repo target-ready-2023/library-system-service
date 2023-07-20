@@ -1,9 +1,6 @@
 package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -11,6 +8,7 @@ import lombok.Data;
 @Table(name="author")
 public class Author {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int authorId;
     private String authorName;
 

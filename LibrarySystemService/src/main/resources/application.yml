@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
     username: postgres
-    password: ${DB_PASSWORD}
+    password: postgres1120
   jpa:
     generate-ddl: 'false'
     database: POSTGRESQL
