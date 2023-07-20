@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class LibraryService {
     AuthorRepository authorRepository;
-    static BookRepository bookRepository;
+    BookRepository bookRepository;
     CategoryRepository categoryRepository;
     public LibraryService(BookRepository bookRepository,CategoryRepository categoryRepository){
         this.bookRepository=bookRepository;
@@ -34,7 +34,7 @@ public class LibraryService {
         return "Book Added Successfully";
     }
 
-    public static void deleteBook(int id) {
+    public void deleteBook(int id) {
         bookRepository.deleteById(id);
     }
     public Book findByBookId(int bookId) {
