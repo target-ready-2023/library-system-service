@@ -1,9 +1,6 @@
 package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,6 +11,7 @@ import java.util.List;
 @Table(name="Book")
 public class Book {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
     private String bookName;
     private String bookDescription;
