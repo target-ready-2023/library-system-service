@@ -35,13 +35,16 @@ public class LibraryService {
         return "Book Added Successfully";
     }
 
+    public String deleteBook(int bookId) {
+        bookRepository.deleteById(bookId);
+        return "Book Deleted Successfully";
+    }
+
     public Book findByBookId(int bookId) {
         return bookRepository.findById(bookId).orElse(null);
     }
 
-
     public List<Book> findBookByCategoryName(String categoryName) {
-
         return bookRepository.findByCategoryName(categoryName);
     }
 
