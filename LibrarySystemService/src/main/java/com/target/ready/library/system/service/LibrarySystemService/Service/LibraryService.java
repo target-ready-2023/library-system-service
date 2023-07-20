@@ -56,7 +56,6 @@ public class LibraryService {
         previousBook.setCategoryName(book.getCategoryName());
         previousBook.setAuthorName(book.getAuthorName());
         previousBook.setPublicationYear(book.getPublicationYear());
-        Book updatedBook = bookRepository.save(previousBook);
-        return updatedBook;
+        return bookRepository.save(previousBook);
     }
 }
