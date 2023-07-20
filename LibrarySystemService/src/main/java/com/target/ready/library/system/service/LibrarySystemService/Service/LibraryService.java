@@ -37,4 +37,10 @@ public class LibraryService {
     public Book findByBookId(int bookId) {
         return bookRepository.findById(bookId).orElse(null);
     }
+
+
+    public List<Book> findBookByCategoryName(String categoryName) {
+
+        return bookRepository.findByCategoryName(categoryName);
+    }
 }
