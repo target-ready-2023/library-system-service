@@ -4,6 +4,7 @@ import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.Service.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,11 @@ public class LibrarySystemController {
     @GetMapping("book/category/{categoryName}")
     public List<Book> findBookByCategoryName(@PathVariable String categoryName){
         return libraryService.findBookByCategoryName(categoryName);
+    }
+    @PutMapping("bookUpdaterService/{id}")
+    public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
+        Book updatedBook = libraryService.updateBookDetails(id, book);
+        return ResponseEntity.ok(updatedBook);
     }
 
 }
