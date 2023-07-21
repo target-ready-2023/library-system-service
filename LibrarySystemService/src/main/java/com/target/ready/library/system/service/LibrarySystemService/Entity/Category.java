@@ -5,13 +5,14 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name="Category")
+@Table(name="Category",uniqueConstraints = @UniqueConstraint(columnNames = { "category_name" }))
 public class Category {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryId;
+    @Column(name="category_name")
     private String categoryName;
 
 
