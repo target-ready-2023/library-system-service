@@ -2,20 +2,18 @@ package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Data
-@Table(name="Book")
-public class Book {
+@Getter
+@Setter
+@Table(name="Book_Category")
+public class BookCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private int bookId;
-    private String bookName;
-    private String bookDescription;
-    private String authorName;
-    private int publicationYear;
-
+    private String categoryName;
 }
