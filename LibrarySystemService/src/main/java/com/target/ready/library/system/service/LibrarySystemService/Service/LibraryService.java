@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.Service;
 
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.Exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.AuthorRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.CategoryRepository;
@@ -45,5 +46,16 @@ public class LibraryService {
 
     public List<Book> findBookByCategoryName(String categoryName) {
         return bookRepository.findByCategoryName(categoryName);
+    }
+
+    public Book updateBookDetails(int id, Book book){
+        Book previousBook = bookRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException("Book with bookID: "+ id + " not found in database"));
+        previousBook.setBookName(book.getBookName());
+        previousBook.setBookDescription(book.getBookDescription());
+        previousBook.setCategoryName(book.getCategoryName());
+        previousBook.setAuthorName(book.getAuthorName());
+        previousBook.setPublicationYear(book.getPublicationYear());
+        return bookRepository.save(previousBook);
     }
 }
