@@ -21,4 +21,6 @@ public class CategoryController {
     public Category findByCategoryName(@PathVariable String categoryName){
         return categoryService.findByCategoryName(categoryName);
     }
+
+    
 }
