@@ -21,21 +21,10 @@ public class LibrarySystemController {
         this.libraryService=libraryService;
     }
 
-    @GetMapping("books")
-    public List<Book> getAllBooks(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber) {
-        int pageSize = 5;
-        List<Book> books;
+    @GetMapping("books_directory/{pageNumber}/{pageSize}")
+    public List<Book> getAllBooks(@PathVariable int pageNumber,@PathVariable int pageSize) {
+        return libraryService.getAllBooks(pageNumber, pageSize);
 
-        try {
-
-            if (pageNumber < 0) {
-                return null;
-            }
-            books = libraryService.getAllBooks(pageNumber, pageSize);
-            return books;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get the books", e);
-        }
     }
 
     @PostMapping("inventory/books")
