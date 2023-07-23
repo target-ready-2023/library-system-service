@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("library_service_api/v1")
+@RequestMapping("library/v1")
 public class LibrarySystemController {
     @Autowired
     private final LibraryService libraryService;
@@ -20,7 +20,7 @@ public class LibrarySystemController {
         this.libraryService=libraryService;
     }
 
-    @GetMapping("allBooks")
+    @GetMapping("books")
     public List<Book> getAllBooks(@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber) {
         int pageSize = 5;
         List<Book> books;
@@ -33,7 +33,7 @@ public class LibrarySystemController {
             books = libraryService.getAllBooks(pageNumber, pageSize);
             return books;
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Failed to get the books", e);
         }
     }
 
@@ -54,7 +54,7 @@ public class LibrarySystemController {
     public List<Book> findBookByCategoryName(@PathVariable String categoryName){
         return libraryService.findBookByCategoryName(categoryName);
     }
-    @PutMapping("bookUpdaterService/{id}")
+    @PutMapping("inventory/book_update/{id}")
     public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
         Book updatedBook = libraryService.updateBookDetails(id, book);
         return ResponseEntity.ok(updatedBook);

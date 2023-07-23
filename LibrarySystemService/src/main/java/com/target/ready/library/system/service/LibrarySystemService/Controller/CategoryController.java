@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("library_service_api/v2")
+@RequestMapping("library/v2")
 public class CategoryController {
 
     @Autowired
