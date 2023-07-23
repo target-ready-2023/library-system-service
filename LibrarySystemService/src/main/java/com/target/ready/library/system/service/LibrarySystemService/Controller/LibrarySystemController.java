@@ -51,10 +51,10 @@ public class LibrarySystemController {
         return libraryService.findByBookId(bookId);
     }
 
-    @GetMapping("book/category/{categoryName}")
-    public List<Book> findBookByCategoryName(@PathVariable String categoryName){
-        return libraryService.findBookByCategoryName(categoryName);
-    }
+//    @GetMapping("book/category/{categoryName}")
+//    public List<Book> findBookByCategoryName(@PathVariable String categoryName){
+//        return libraryService.findBookByCategoryName(categoryName);
+//    }
     @PutMapping("inventory/book_update/{id}")
     public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
         Book updatedBook = libraryService.updateBookDetails(id, book);
