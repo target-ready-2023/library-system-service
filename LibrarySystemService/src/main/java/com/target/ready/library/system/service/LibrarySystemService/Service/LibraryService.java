@@ -30,9 +30,9 @@ public class LibraryService {
         return findBooks.toList();
     }
 
-    public String addBook(Book book){
-        bookRepository.save(book);
-        return "Book Added Successfully";
+    public int addBook(Book book){
+        Book book1= bookRepository.save(book);
+        return book1.getBookId();
     }
 
     public String deleteBook(int bookId) {

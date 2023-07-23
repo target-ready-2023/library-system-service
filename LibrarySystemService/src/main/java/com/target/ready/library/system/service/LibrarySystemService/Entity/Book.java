@@ -16,7 +16,9 @@ public class Book {
     @Column(name="book_name")
     private String bookName;
     private String bookDescription;
-    private String categoryName;
+
+
+
     @Column(name="author_name")
     private String authorName;
     private int publicationYear;

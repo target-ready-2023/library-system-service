@@ -1,12 +1,13 @@
 package com.target.ready.library.system.service.LibrarySystemService.Controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
-import com.target.ready.library.system.service.LibrarySystemService.Entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.Service.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class LibrarySystemController {
     }
 
     @PostMapping("inventory/books")
-    public String addBook(@RequestBody Book book){return libraryService.addBook(book);}
+    public int addBook(@RequestBody Book book){return libraryService.addBook(book);}
 
     @DeleteMapping("book/{bookId}")
     public String deleteBook(@PathVariable int bookId) {
