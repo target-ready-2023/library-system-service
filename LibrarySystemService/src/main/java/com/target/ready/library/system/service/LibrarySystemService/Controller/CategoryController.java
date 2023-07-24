@@ -25,9 +25,9 @@ public class CategoryController {
         return categoryService.findByCategoryName(categoryName);
     }
 
-    @GetMapping("/category/book/{BookId}")
-    public BookCategory findByBookId(@PathVariable int BookId){
-        return categoryService.findByBookId(BookId);
+    @GetMapping("/category/book/{bookId}")
+    public BookCategory findByBookId(@PathVariable int bookId){
+        return categoryService.findByBookId(bookId);
     }
     @PostMapping("inventory/book/category")
     public String addBookCategory(@RequestBody BookCategory bookCategory){
