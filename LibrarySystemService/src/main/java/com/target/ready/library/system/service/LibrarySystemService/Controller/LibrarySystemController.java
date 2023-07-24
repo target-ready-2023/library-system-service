@@ -40,7 +40,6 @@ public class LibrarySystemController {
         return libraryService.findByBookId(bookId);
     }
 
-
 //    @GetMapping("book/category/{categoryName}")
 //    public List<Book> findBookByCategoryName(@PathVariable String categoryName){
 //        return libraryService.findBookByCategoryName(categoryName);
