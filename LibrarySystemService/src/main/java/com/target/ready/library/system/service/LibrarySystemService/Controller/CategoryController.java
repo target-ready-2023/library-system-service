@@ -6,6 +6,8 @@ import com.target.ready.library.system.service.LibrarySystemService.Service.Cate
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("library/v2")
 public class CategoryController {
@@ -27,5 +29,11 @@ public class CategoryController {
     public String addBookCategory(@RequestBody BookCategory bookCategory){
         return categoryService.addBookCategory(bookCategory);
     }
+
+    @GetMapping("/categories")
+    public List<Category> findAllCategories(){
+        return categoryService.getAllCategories();
+    }
+
 
 }
