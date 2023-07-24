@@ -7,6 +7,8 @@ import com.target.ready.library.system.service.LibrarySystemService.Repository.C
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
 
@@ -29,5 +31,9 @@ public class CategoryService {
     public String addBookCategory(BookCategory bookCategory){
         bookCategoryRepository.save(bookCategory);
         return "Added";
+    }
+
+    public List<Category> getAllCategories(){
+        return categoryRepository.findAll();
     }
 }
