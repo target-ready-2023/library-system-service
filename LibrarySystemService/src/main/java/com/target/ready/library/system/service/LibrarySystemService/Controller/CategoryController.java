@@ -25,11 +25,19 @@ public class CategoryController {
         return categoryService.findByCategoryName(categoryName);
     }
 
+    @GetMapping("/category/book/{BookId}")
+    public BookCategory findByBookId(@PathVariable int BookId){
+        return categoryService.findByBookId(BookId);
+    }
     @PostMapping("inventory/book/category")
     public String addBookCategory(@RequestBody BookCategory bookCategory){
         return categoryService.addBookCategory(bookCategory);
     }
 
+    @DeleteMapping("inventory/book/category/{id}")
+    public String deleteBookCategory(@PathVariable int id){
+        return categoryService.deleteBookCategory(id);
+    }
     @GetMapping("/categories")
     public List<Category> findAllCategories(){
         return categoryService.getAllCategories();

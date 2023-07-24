@@ -28,9 +28,18 @@ public class CategoryService {
         return category;
     }
 
+    public BookCategory findByBookId(int bookId){
+        BookCategory bookCategory=bookCategoryRepository.findByBookId(bookId);
+        return bookCategory;
+    }
     public String addBookCategory(BookCategory bookCategory){
         bookCategoryRepository.save(bookCategory);
         return "Added";
+    }
+
+    public String deleteBookCategory(int id){
+        bookCategoryRepository.deleteById(id);
+        return "Deleted";
     }
 
     public List<Category> getAllCategories(){
