@@ -1,5 +1,7 @@
+
 server:
   port: 8080
+
 spring:
   application:
     name: library_service_api
@@ -10,7 +12,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
     username: postgres
-    password: ${DB_PASSWORD}
+    password:
+
   jpa:
     generate-ddl: 'false'
     database: POSTGRESQL
@@ -26,7 +29,7 @@ spring:
       org:
         hibernate:
           flushMode: COMMIT
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
     show-sql: true
@@ -34,4 +37,7 @@ spring:
     init:
       continue-on-error: 'false'
       platform: postgresql
+
+
+
 
