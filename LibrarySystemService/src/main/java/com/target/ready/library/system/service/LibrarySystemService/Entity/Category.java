@@ -1,11 +1,15 @@
 package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
 @Table(name="Category",uniqueConstraints = @UniqueConstraint(columnNames = { "category_name" }))
+@NoArgsConstructor
 public class Category {
 
 
