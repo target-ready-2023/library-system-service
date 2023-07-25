@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("library/v1")
+@RequestMapping("library/v1/")
 public class LibrarySystemController {
     @Autowired
     private final LibraryService libraryService;
