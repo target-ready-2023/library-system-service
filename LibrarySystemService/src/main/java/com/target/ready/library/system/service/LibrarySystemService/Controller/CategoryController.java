@@ -28,11 +28,19 @@ public class CategoryController {
         return categoryService.findByCategoryName(categoryName);
     }
 
+    @GetMapping("/category/book/{bookId}")
+    public BookCategory findByBookId(@PathVariable int bookId){
+        return categoryService.findByBookId(bookId);
+    }
     @PostMapping("inventory/book/category")
     public String addBookCategory(@RequestBody BookCategory bookCategory){
         return categoryService.addBookCategory(bookCategory);
     }
 
+    @DeleteMapping("inventory/book/category/{id}")
+    public String deleteBookCategory(@PathVariable int id){
+        return categoryService.deleteBookCategory(id);
+    }
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> findAllCategories(){
         List<Category> categories = categoryService.getAllCategories();
