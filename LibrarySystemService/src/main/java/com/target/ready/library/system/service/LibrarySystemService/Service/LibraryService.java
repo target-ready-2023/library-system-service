@@ -67,6 +67,13 @@ public class LibraryService {
         }
         return bookDetails;
     }
+
+    public List<Book> findByBookName(String bookName){
+        List<Book> books= bookRepository.findByBookName(bookName);
+        return books;
+    }
+
+
     public Book updateBookDetails(int id, Book book){
         Book previousBook = bookRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException("Book with bookID: "+ id + " not found in database"));
@@ -76,4 +83,5 @@ public class LibraryService {
         previousBook.setPublicationYear(book.getPublicationYear());
         return bookRepository.save(previousBook);
     }
+
 }
