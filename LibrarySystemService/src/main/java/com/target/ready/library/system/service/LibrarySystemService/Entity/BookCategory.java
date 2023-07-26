@@ -16,4 +16,5 @@ public class BookCategory {
     private int id;
     private int bookId;
     private String categoryName;
+
 }
