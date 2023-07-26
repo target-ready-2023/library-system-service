@@ -1,4 +1,5 @@
 
+
 server:
   port: 8080
 
@@ -31,12 +32,13 @@ spring:
           flushMode: COMMIT
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
   sql:
     init:
       continue-on-error: 'false'
       platform: postgresql
+
 
 
 
