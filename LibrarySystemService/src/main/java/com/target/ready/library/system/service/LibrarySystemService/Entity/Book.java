@@ -1,12 +1,16 @@
 package com.target.ready.library.system.service.LibrarySystemService.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Table(name="Book",uniqueConstraints = @UniqueConstraint(columnNames = { "book_name", "author_name" }))
 public class Book {
@@ -19,5 +23,6 @@ public class Book {
     @Column(name="author_name")
     private String authorName;
     private int publicationYear;
+
 
 }

@@ -19,7 +19,7 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping("inventory/category")
-    public String addCategory(@RequestBody Category category){
+    public Category addCategory(@RequestBody Category category){
         return categoryService.addCategory(category);
     }
 
@@ -32,8 +32,9 @@ public class CategoryController {
     public BookCategory findByBookId(@PathVariable int bookId){
         return categoryService.findByBookId(bookId);
     }
+
     @PostMapping("inventory/book/category")
-    public String addBookCategory(@RequestBody BookCategory bookCategory){
+    public BookCategory addBookCategory(@RequestBody BookCategory bookCategory){
         return categoryService.addBookCategory(bookCategory);
     }
 
