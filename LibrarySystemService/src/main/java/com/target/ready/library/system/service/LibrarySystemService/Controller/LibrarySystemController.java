@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("library/v1")
+@RequestMapping("library/v1/")
 public class LibrarySystemController {
     @Autowired
     private final LibraryService libraryService;
@@ -30,9 +30,10 @@ public class LibrarySystemController {
     }
 
     @PostMapping("inventory/books")
-    public int addBook(@RequestBody Book book) {
-        return libraryService.addBook(book);
-    }
+
+    public Book addBook(@RequestBody Book book){return libraryService.addBook(book);}
+
+
 
     @DeleteMapping("book/{bookId}")
     public String deleteBook(@PathVariable int bookId) {

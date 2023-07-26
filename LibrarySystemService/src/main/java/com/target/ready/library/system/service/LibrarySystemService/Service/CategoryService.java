@@ -18,9 +18,9 @@ public class CategoryService {
     @Autowired
     BookCategoryRepository bookCategoryRepository;
 
-    public String addCategory(Category category){
-        categoryRepository.save(category);
-        return "Category Added Successfully";
+    public Category addCategory(Category category){
+        return categoryRepository.save(category);
+
     }
 
     public Category findByCategoryName(String categoryName){
@@ -32,9 +32,9 @@ public class CategoryService {
         BookCategory bookCategory=bookCategoryRepository.findByBookId(bookId);
         return bookCategory;
     }
-    public String addBookCategory(BookCategory bookCategory){
-        bookCategoryRepository.save(bookCategory);
-        return "Added";
+    public BookCategory addBookCategory(BookCategory bookCategory){
+        return bookCategoryRepository.save(bookCategory);
+
     }
 
     public String deleteBookCategory(int id){

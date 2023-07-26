@@ -42,9 +42,9 @@ public class LibraryService {
         return findBooks.toList();
     }
 
-    public int addBook(Book book){
+    public Book addBook(Book book){
         Book book1= bookRepository.save(book);
-        return book1.getBookId();
+        return book1;
     }
 
     public String deleteBook(int bookId) {

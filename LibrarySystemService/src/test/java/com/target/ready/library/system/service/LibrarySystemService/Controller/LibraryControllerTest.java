@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {LibraryControllerTest.class})
@@ -25,9 +28,29 @@ public class LibraryControllerTest {
     @InjectMocks
     LibrarySystemController librarySystemController;
 
+
+    @Test
+    public void addBookTest(){
+        Book book=new Book();
+        book.setBookName("Alchemist");
+        book.setBookDescription("Follow Your Dreams");
+        book.setAuthorName("Paulopoelo");
+        book.setPublicationYear(1999);
+        when(libraryService.addBook(book)).thenReturn(book);
+        assertNotNull(librarySystemController.addBook(book));
+        assertEquals("Alchemist",librarySystemController.addBook(book).getBookName());
+        assertEquals("Follow Your Dreams",librarySystemController.addBook(book).getBookDescription());
+        assertEquals("Paulopoelo",librarySystemController.addBook(book).getAuthorName());
+        assertEquals(1999,librarySystemController.addBook(book).getPublicationYear());
+
+
+    }
+
+
    // Book RECORD_1=new Book(1,"A Girl in room 205","An unlove story","Chetan Bhagat",2000);
    // Book RECORD_2=new Book(2,"The Silent Patient","The dangers of unresolved or improperly treated mental illness","Alex Michaelides",	2019);
    // Book RECORD_3=new Book(3,"The Secret Adversary","About the lovable married couple","Agatha Christie",1922);
+
 
     @Test
    public void findByBookNameTest(){
