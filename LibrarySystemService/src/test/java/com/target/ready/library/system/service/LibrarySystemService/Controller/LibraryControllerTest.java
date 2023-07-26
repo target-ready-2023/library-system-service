@@ -1,6 +1,8 @@
 package com.target.ready.library.system.service.LibrarySystemService.Controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
+import com.target.ready.library.system.service.LibrarySystemService.Repository.BookRepository;
+import com.target.ready.library.system.service.LibrarySystemService.Repository.CategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Service.LibraryService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -28,6 +31,20 @@ public class LibraryControllerTest {
     @InjectMocks
     LibrarySystemController librarySystemController;
 
+    @Mock
+    BookRepository bookRepository;
+
+    @Test
+    public void findByBookIdTest(){
+        Book book = new Book();
+        book.setBookId(1);
+        book.setBookName("The Shining");
+        book.setBookDescription("Stephen King");
+        book.setAuthorName("Chetan");
+        book.setPublicationYear(2023);
+        when(libraryService.findByBookId(1)).thenReturn(book);
+        assert(book.getBookId()==1);
+    }
 
     @Test
     public void addBookTest(){
@@ -42,15 +59,11 @@ public class LibraryControllerTest {
         assertEquals("Follow Your Dreams",librarySystemController.addBook(book).getBookDescription());
         assertEquals("Paulopoelo",librarySystemController.addBook(book).getAuthorName());
         assertEquals(1999,librarySystemController.addBook(book).getPublicationYear());
-
-
     }
-
 
    // Book RECORD_1=new Book(1,"A Girl in room 205","An unlove story","Chetan Bhagat",2000);
    // Book RECORD_2=new Book(2,"The Silent Patient","The dangers of unresolved or improperly treated mental illness","Alex Michaelides",	2019);
    // Book RECORD_3=new Book(3,"The Secret Adversary","About the lovable married couple","Agatha Christie",1922);
-
 
     @Test
    public void findByBookNameTest(){

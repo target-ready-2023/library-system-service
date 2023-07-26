@@ -56,6 +56,8 @@ public class LibraryService {
         return bookRepository.findById(bookId).orElse(null);
     }
 
+<<<<<<< HEAD
+=======
     public List<Book> findBooksByCategoryName(String categoryName){
         List<BookCategory> bookCategory=new ArrayList<>();
         List<Book> bookDetails = new ArrayList<>();
@@ -72,6 +74,7 @@ public class LibraryService {
         List<Book> books= bookRepository.findByBookName(bookName);
         return books;
     }
+>>>>>>> 13904c2492dd45a73995737ca65dc6fb7a68b89d
 
 
     public Book updateBookDetails(int id, Book book){

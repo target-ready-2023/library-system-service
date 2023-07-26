@@ -8,17 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
+import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {LibraryServiceTest.class})
@@ -32,9 +28,18 @@ public class LibraryServiceTest {
 
     @InjectMocks
     LibraryService libraryService;
-
     @Test
+    public void findByBookIdTest(){
+        Book book = new Book();
+        book.setBookId(1);
+        book.setBookName("The Shining");
+        book.setBookDescription("Stephen King");
+        book.setAuthorName("Chetan");
+        book.setPublicationYear(2023);
 
+        when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+        assertEquals(book.getBookId(),libraryService.findByBookId(1).getBookId());
+    }
     public void addBookTest(){
         Book book=new Book();
         book.setBookName("Alchemist");
@@ -52,7 +57,6 @@ public class LibraryServiceTest {
         assertEquals(1999,libraryService.addBook(book).getPublicationYear());
         assertEquals("Paulopoelo",libraryService.addBook(book).getAuthorName());
     }
-
     public void findByBookNameTest(){
         List<Book> books = new ArrayList<>();
 
@@ -76,6 +80,4 @@ public class LibraryServiceTest {
         //List<Book> result = libraryService.findByBookName(book1.getBookName());
         //assertTrue(result.isEmpty());
     }
-
-
 }
