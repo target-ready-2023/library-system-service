@@ -44,22 +44,22 @@ public class LibrarySystemController {
         return libraryService.findByBookId(bookId);
     }
 
+
+    @GetMapping("book/category/{categoryName}")
+    public List<Book> findBookByCategoryName(@PathVariable String categoryName){
+        return libraryService.findBooksByCategoryName(categoryName);
+    }
+
     @GetMapping("books/{bookName}")
     public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) {
         List<Book> book = libraryService.findByBookName(bookName);
         return new ResponseEntity<List<Book>>(book, HttpStatus.OK);
     }
-    //public List<Book> findByBookName(@PathVariable String bookName){
-    //    return libraryService.findByBookName(bookName);
-    //}
 
     @PutMapping("inventory/book_update/{id}")
     public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
         Book updatedBook = libraryService.updateBookDetails(id, book);
         return ResponseEntity.ok(updatedBook);
     }
-    //    @GetMapping("book/category/{categoryName}")
-//    public List<Book> findBookByCategoryName(@PathVariable String categoryName){
-//        return libraryService.findBookByCategoryName(categoryName);
-//    }
+
 }
