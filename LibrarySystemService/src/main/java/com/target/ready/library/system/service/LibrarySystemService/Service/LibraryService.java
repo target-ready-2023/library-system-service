@@ -47,9 +47,10 @@ public class LibraryService {
         return bookRepository.findById(bookId).orElse(null);
     }
 
-//    public List<Book> findBookByCategoryName(String categoryName) {
-//        return bookRepository.findByCategoryName(categoryName);
-//    }
+    public List<Book> findByBookName(String bookName){
+        List<Book> books= bookRepository.findByBookName(bookName);
+        return books;
+    }
 
     public Book updateBookDetails(int id, Book book){
         Book previousBook = bookRepository.findById(id).orElseThrow(()->
@@ -60,4 +61,9 @@ public class LibraryService {
         previousBook.setPublicationYear(book.getPublicationYear());
         return bookRepository.save(previousBook);
     }
+
+//    public List<Book> findBookByCategoryName(String categoryName) {
+//        return bookRepository.findByCategoryName(categoryName);
+//    }
+
 }
