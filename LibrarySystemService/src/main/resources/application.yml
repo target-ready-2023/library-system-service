@@ -12,7 +12,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
     username: postgres
-    password: 
+    password: sharanya29
 
   jpa:
     generate-ddl: 'false'
@@ -31,7 +31,7 @@ spring:
           flushMode: COMMIT
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
   sql:
     init:
