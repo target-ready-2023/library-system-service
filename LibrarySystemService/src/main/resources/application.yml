@@ -36,3 +36,4 @@ spring:
     init:
       continue-on-error: 'false'
       platform: postgresql
+
