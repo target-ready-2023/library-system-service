@@ -104,6 +104,7 @@ public class LibraryControllerTest {
    //     assertEquals(HttpStatus.OK, response.getStatusCode());
    //     assertEquals(2, response.getBody().size());
    // }
+    @Test
    public void deleteBookTest() {
        Book book = new Book();
        book.setBookId(2);
