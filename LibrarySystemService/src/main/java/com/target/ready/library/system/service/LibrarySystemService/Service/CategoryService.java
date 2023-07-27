@@ -32,6 +32,18 @@ public class CategoryService {
         BookCategory bookCategory=bookCategoryRepository.findByBookId(bookId);
         return bookCategory;
     }
+    public void deleteCategoriesByBookId(int bookId){
+        List<BookCategory> bookCategories = bookCategoryRepository.findAllCategoriesByBookId(bookId);
+        for (BookCategory bookCategory:bookCategories
+        ) {
+            categoryRepository.deleteCategoryByCategoryName(bookCategory.getCategoryName());
+        }
+    }
+
+    public String deleteBookCategoryByBookId(int bookId){
+        bookCategoryRepository.deleteBookCategoriesByBookId(bookId);
+        return "Book category deleted";
+    }
     public BookCategory addBookCategory(BookCategory bookCategory){
         return bookCategoryRepository.save(bookCategory);
 
@@ -43,6 +55,7 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories(){
+
         return categoryRepository.findAll();
     }
 }

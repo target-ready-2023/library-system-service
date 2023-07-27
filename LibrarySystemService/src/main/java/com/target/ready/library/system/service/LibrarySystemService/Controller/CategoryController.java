@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,14 @@ public class CategoryController {
 
     @DeleteMapping("inventory/book/category/{id}")
     public String deleteBookCategory(@PathVariable int id){
+
         return categoryService.deleteBookCategory(id);
+    }
+    @Transactional
+    @DeleteMapping("inventory/delete/bookCategory/{id}")
+    public String deleteCategories(@PathVariable int id){
+        categoryService.deleteCategoriesByBookId(id);
+        return categoryService.deleteBookCategoryByBookId(id);
     }
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> findAllCategories(){

@@ -32,7 +32,6 @@ public class LibraryService {
     public LibraryService(BookRepository bookRepository,CategoryRepository categoryRepository, BookCategoryRepository bookCategoryRepository){
         this.bookRepository=bookRepository;
         this.categoryRepository=categoryRepository;
-        this.bookRepository=bookRepository;
     }
 
     public List<Book> getAllBooks(int pageNumber,int pageSize){
