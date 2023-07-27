@@ -105,4 +105,15 @@ public class LibraryControllerTest {
    //     assertEquals(HttpStatus.OK, response.getStatusCode());
    //     assertEquals(2, response.getBody().size());
    // }
+   public void deleteBookTest() {
+       Book book = new Book();
+       book.setBookId(2);
+       book.setBookName("Life of Suraj");
+       book.setBookDescription("Masterpiece");
+       book.setAuthorName("Suraj");
+       book.setPublicationYear(2024);
+       when(libraryService.deleteBook(2)).thenReturn("Book Deleted Successfully");
+       String response = librarySystemController.deleteBook(book.getBookId());
+       assertEquals(response,"Book Deleted Successfully");
+   }
 }

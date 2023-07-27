@@ -7,6 +7,7 @@ import com.target.ready.library.system.service.LibrarySystemService.Repository.B
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {LibraryServiceTest.class})
 public class LibraryServiceTest {
@@ -81,5 +82,29 @@ public class LibraryServiceTest {
         //assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void deleteBookTest() {
+        List<Book> books = new ArrayList<>();
+        Book book1 = new Book();
+        book1.setBookId(1);
+        book1.setBookName("Life of Suraj 1");
+        book1.setBookDescription("Masterpiece");
+        book1.setAuthorName("Suraj");
+        book1.setPublicationYear(2024);
+        books.add(book1);
+        Book book2 = new Book();
+        book2.setBookId(2);
+        book2.setBookName("Life of Suraj 2");
+        book2.setBookDescription("Masterpiece");
+        book2.setAuthorName("Suraj");
+        book2.setPublicationYear(2024);
+        books.add(book1);
 
+        doAnswer((i) -> {
+            books.remove(0);
+            return null;
+        }).when(bookRepository).deleteById(1);
+        libraryService.deleteBook(1);
+        assertEquals(books.size(),1);
+    }
 }
