@@ -50,6 +50,7 @@ public class CategoryService {
     }
 
     public String deleteBookCategory(int id){
+
         bookCategoryRepository.deleteById(id);
         return "Deleted";
     }
