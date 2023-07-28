@@ -57,10 +57,9 @@ public class LibrarySystemController {
         return new ResponseEntity<List<Book>>(book, HttpStatus.OK);
     }
 
-    @PutMapping("inventory/book_update/{id}")
-    public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
-        Book updatedBook = libraryService.updateBookDetails(id, book);
-        return ResponseEntity.ok(updatedBook);
+    @PutMapping("inventory/book/update/{id}")
+    public Book updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
+        return libraryService.updateBookDetails(id, book);
     }
 
 }

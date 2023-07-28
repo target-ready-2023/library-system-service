@@ -16,11 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest(classes = {LibraryControllerTest.class})
 public class LibraryControllerTest {
@@ -114,4 +113,19 @@ public class LibraryControllerTest {
        String response = librarySystemController.deleteBook(book.getBookId());
        assertEquals(response,"Book Deleted Successfully");
    }
+    @Test
+    public void updateBookControllerTest(){
+        Book book = new Book();
+        book.setBookId(1);
+        book.setBookName("A leader who had no title");
+        book.setBookDescription("A self realisation book");
+        book.setPublicationYear(2011);
+        book.setAuthorName("Robin Sharma");
+
+        when(librarySystemController.updateBookDetails(1,book)).thenReturn(book);
+        Book updatedBook = librarySystemController.updateBookDetails(1, book);
+        verify(libraryService, times(1)).updateBookDetails(1, book);
+        assertEquals(book, updatedBook);
+    }
+
 }

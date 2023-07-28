@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.Service;
 
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.Entity.BookCategory;
+import com.target.ready.library.system.service.LibrarySystemService.Exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.BookRepository;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,8 @@ import org.springframework.data.domain.*;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {LibraryServiceTest.class})
@@ -42,6 +42,7 @@ public class LibraryServiceTest {
         when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         assertEquals(book.getBookId(),libraryService.findByBookId(1).getBookId());
     }
+    @Test
     public void addBookTest(){
         Book book=new Book();
         book.setBookName("Alchemist");
@@ -59,6 +60,7 @@ public class LibraryServiceTest {
         assertEquals(1999,libraryService.addBook(book).getPublicationYear());
         assertEquals("Paulopoelo",libraryService.addBook(book).getAuthorName());
     }
+    @Test
     public void findByBookNameTest(){
         List<Book> books = new ArrayList<>();
 
@@ -128,5 +130,61 @@ public class LibraryServiceTest {
         when(bookRepository.findAll(pageable)).thenReturn(page);
         List<Book> response=libraryService.getAllBooks(0,5);
         assertEquals(2, response.size());
+    }
+    @Test
+    public void updateBookFoundTest() {
+        int bookId = 1;
+        Book bookToUpdate = new Book();
+        bookToUpdate.setBookName("The 5 am club");
+        bookToUpdate.setBookDescription("A self development book");
+        bookToUpdate.setAuthorName("Robin Sharma");
+        bookToUpdate.setPublicationYear(2013);
+
+        Book existingBook = new Book();
+        existingBook.setBookId(bookId);
+        existingBook.setBookName("The monk who sold his ferrari");
+        existingBook.setBookDescription("Fictional motivation");
+        existingBook.setAuthorName("Robin Sharma");
+        existingBook.setPublicationYear(1996);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(existingBook));
+        when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> {
+            Book argumentBook = invocation.getArgument(0);
+            Book newBook = new Book();
+            newBook.setBookId(bookId);
+            newBook.setBookName(argumentBook.getBookName());
+            newBook.setBookDescription(argumentBook.getBookDescription());
+            newBook.setAuthorName(argumentBook.getAuthorName());
+            newBook.setPublicationYear(argumentBook.getPublicationYear());
+            return newBook;
+        });
+
+        Book updatedBook = libraryService.updateBookDetails(bookId, bookToUpdate);
+
+        assertEquals(bookId, updatedBook.getBookId());
+        assertEquals(bookToUpdate.getBookName(), updatedBook.getBookName());
+        assertEquals(bookToUpdate.getBookDescription(), updatedBook.getBookDescription());
+        assertEquals(bookToUpdate.getAuthorName(), updatedBook.getAuthorName());
+        assertEquals(bookToUpdate.getPublicationYear(), updatedBook.getPublicationYear());
+
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(bookRepository, times(1)).save(any(Book.class));
+    }
+
+    @Test
+    public void updateBookNotFoundTest() {
+        int bookId = 1;
+        Book bookToUpdate = new Book();
+        bookToUpdate.setBookName("The 5 am club");
+        bookToUpdate.setBookDescription("A self development book");
+        bookToUpdate.setAuthorName("Robin Sharma");
+        bookToUpdate.setPublicationYear(2013);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> {
+            libraryService.updateBookDetails(bookId, bookToUpdate);
+        });
+        verify(bookRepository, times(1)).findById(eq(bookId));
+        verify(bookRepository, never()).save(any(Book.class));
     }
 }
