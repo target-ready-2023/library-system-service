@@ -90,26 +90,24 @@ public class LibraryControllerTest {
    }
 
 
-   // @Test
-   // public void getAllBooksTest(){
-   //    List<Book> books = new ArrayList<>();
-   //    Book book1=new Book(1,
-   //            "The Hound of Death",
-   //            "A young Englishman visiting Cornwall finds himself delving into the legend of a Belgian nun who is living as a refugee in the village."
-   //            ,"Agatha Christie",1933);
-   //    books.add(book1);
-   //    Book book2=new Book(2,
-   //            "The Adventure of Dancing Men",
-   //            "The little dancing men are at the heart of a mystery which seems to be driving his young wife Elsie Patrick to distraction."
-   //            ,"Sir Arthur Conan Doyle",1903);
-   //    books.add(book2);
-//
-   //     //List<Book> books=new ArrayList<>(Arrays.asList(RECORD_1,RECORD_2,RECORD_3));
-   //     when(libraryService.getAllBooks(0,5)).thenReturn(books);
-   //     ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
-   //     assertEquals(HttpStatus.OK, response.getStatusCode());
-   //     assertEquals(2, response.getBody().size());
-   // }
+    @Test
+    public void testGetAllBooks() throws Exception{
+        List<Book>  records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+
+        when(libraryService.getAllBooks(0,5)).thenReturn(records);
+        ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+
+    }
    public void deleteBookTest() {
        Book book = new Book();
        book.setBookId(2);
