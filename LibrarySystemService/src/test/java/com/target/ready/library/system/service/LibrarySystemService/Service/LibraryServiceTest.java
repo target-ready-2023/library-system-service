@@ -10,10 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.*;
+
+import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -42,6 +42,7 @@ public class LibraryServiceTest {
         when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         assertEquals(book.getBookId(),libraryService.findByBookId(1).getBookId());
     }
+    @Test
     public void addBookTest(){
         Book book=new Book();
         book.setBookName("Alchemist");
@@ -59,6 +60,7 @@ public class LibraryServiceTest {
         assertEquals(1999,libraryService.addBook(book).getPublicationYear());
         assertEquals("Paulopoelo",libraryService.addBook(book).getAuthorName());
     }
+    @Test
     public void findByBookNameTest(){
         List<Book> books = new ArrayList<>();
 
@@ -109,6 +111,25 @@ public class LibraryServiceTest {
         }).when(bookRepository).deleteById(1);
         libraryService.deleteBook(1);
         assertEquals(books.size(),1);
+    }
+
+    @Test
+    public void findAllBooksTest(){
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+
+        Pageable pageable = PageRequest.of(0,5);
+        Page<Book> page = new PageImpl<>(records, pageable, records.size());
+        when(bookRepository.findAll(pageable)).thenReturn(page);
+        List<Book> response=libraryService.getAllBooks(0,5);
+        assertEquals(2, response.size());
     }
     @Test
     public void updateBookFoundTest() {

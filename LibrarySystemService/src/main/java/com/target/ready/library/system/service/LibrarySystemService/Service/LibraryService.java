@@ -36,8 +36,7 @@ public class LibraryService {
 
     public List<Book> getAllBooks(int pageNumber,int pageSize){
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Book> findBooks = bookRepository.findAll( pageable);
-        List<Book> allBooks = findBooks.getContent();
+        Page<Book> findBooks = bookRepository.findAll(pageable);
         return findBooks.toList();
     }
 
