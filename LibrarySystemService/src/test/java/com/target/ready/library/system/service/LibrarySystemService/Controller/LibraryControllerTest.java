@@ -1,6 +1,8 @@
 package com.target.ready.library.system.service.LibrarySystemService.Controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.Entity.Book;
+import com.target.ready.library.system.service.LibrarySystemService.Entity.BookCategory;
+import com.target.ready.library.system.service.LibrarySystemService.Repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Repository.CategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.Service.LibraryService;
@@ -33,6 +35,9 @@ public class LibraryControllerTest {
 
     @Mock
     BookRepository bookRepository;
+
+    @Mock
+    BookCategoryRepository bookCategoryRepository;
 
     @Test
     public void findByBookIdTest(){
@@ -116,4 +121,29 @@ public class LibraryControllerTest {
        String response = librarySystemController.deleteBook(book.getBookId());
        assertEquals(response,"Book Deleted Successfully");
    }
+
+    @Test
+    public void findBookByCategoryNameTest(){
+        List<Book> books = new ArrayList<>();
+        List<BookCategory> bookCategories = new ArrayList<>();
+        Book book1=new Book(1,
+                "Harry Potter and the Philosopher's Stone",
+                "Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry."
+                ,"J. K. Rowling",1997);
+        books.add(book1);
+        BookCategory bookCategory1 = new BookCategory();
+        bookCategory1.setCategoryName("Fiction");
+        bookCategory1.setBookId(1);
+        Book book2=new Book(2,
+                "The Immortals of Meluha",
+                "follows the story of a man named Shiva, who lives in the Tibetan region – Mount Kailash."
+                ,"Amish Tripathi",2010);
+        books.add(book2);
+        when(libraryService.findByBookName("The Hound of Death")).thenReturn(books);
+        ResponseEntity<List<Book>> response = librarySystemController.findByBookName(book1.getBookName());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(books, response.getBody());
+    }
+
+
 }
