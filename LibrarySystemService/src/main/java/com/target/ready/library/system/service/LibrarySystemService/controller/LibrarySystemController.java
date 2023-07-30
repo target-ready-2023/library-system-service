@@ -33,9 +33,9 @@ public class LibrarySystemController {
         this.bookCategoryRepository = bookCategoryRepository;
     }
 
-    @GetMapping("books_directory/{pageNumber}/{pageSize}")
-    public ResponseEntity<List<Book>> getAllBooks(@PathVariable int pageNumber, @PathVariable int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+    @GetMapping("books_directory/{page_number}/{page_size}")
+    public ResponseEntity<List<Book>> getAllBooks(@PathVariable int page_number, @PathVariable int page_size) {
+        Pageable pageable = PageRequest.of(page_number,page_size);
         Page<Book> findBooks = bookRepository.findAll(pageable);
         List<Book> books =  findBooks.toList();
         return new ResponseEntity<>(books,HttpStatus.OK);
