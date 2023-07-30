@@ -1,4 +1,4 @@
-package com.target.ready.library.system.service.LibrarySystemService.Entity;
+package com.target.ready.library.system.service.LibrarySystemService.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
