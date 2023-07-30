@@ -1,39 +1,39 @@
-server:
-  port: 8080
-
-spring:
-  application:
-    name: library_service_api
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
-    username: postgres
-    password: 5225
-
-  jpa:
-    generate-ddl: 'false'
-    database: POSTGRESQL
-    properties:
-      hibernate:
-        format_sql: true
-        order_inserts: true
-        order_updates: true
-        jdbc:
-          batch_size: 100
-          lob:
-            non_contextual_creation: 'true'
-      org:
-        hibernate:
-          flushMode: COMMIT
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-  sql:
-    init:
-      continue-on-error: 'false'
-      platform: postgresql
-
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: library_service_api
+#  jackson:
+#    serialization:
+#      fail-on-empty-beans: false
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
+#    username: postgres
+#    password: 5225
+#
+#  jpa:
+#    generate-ddl: 'false'
+#    database: POSTGRESQL
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        order_inserts: true
+#        order_updates: true
+#        jdbc:
+#          batch_size: 100
+#          lob:
+#            non_contextual_creation: 'true'
+#      org:
+#        hibernate:
+#          flushMode: COMMIT
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    hibernate:
+#      ddl-auto: none
+#    show-sql: true
+#  sql:
+#    init:
+#      continue-on-error: 'false'
+#      platform: postgresql
+#
