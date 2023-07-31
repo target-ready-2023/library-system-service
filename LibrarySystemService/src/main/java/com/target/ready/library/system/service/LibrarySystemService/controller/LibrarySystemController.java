@@ -5,7 +5,10 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.BookC
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
+import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,9 +31,13 @@ public class LibrarySystemController {
     @Autowired
     private final BookCategoryRepository bookCategoryRepository;
 
-    public LibrarySystemController(BookRepository bookRepository, BookCategoryRepository bookCategoryRepository) {
+    @Autowired
+    private final InventoryRepository inventoryRepository;
+
+    public LibrarySystemController(BookRepository bookRepository, BookCategoryRepository bookCategoryRepository,InventoryRepository inventoryRepository) {
         this.bookRepository = bookRepository;
         this.bookCategoryRepository = bookCategoryRepository;
+        this.inventoryRepository=inventoryRepository;
     }
 
     @GetMapping("books_directory/{pageNumber}/{pageSize}")
@@ -88,6 +95,16 @@ public class LibrarySystemController {
         previousBook.setAuthorName(book.getAuthorName());
         previousBook.setPublicationYear(book.getPublicationYear());
         return bookRepository.save(previousBook);
+    }
+
+    @GetMapping("inventory/book/{bookId}")
+    public Inventory getBookById(@PathVariable int bookId){
+        return inventoryRepository.findById(bookId).orElse(null);
+    }
+
+    @PostMapping("inventory")
+    public Inventory addInventory(@RequestBody Inventory inventory){
+        return inventoryRepository.save(inventory);
     }
 
 }

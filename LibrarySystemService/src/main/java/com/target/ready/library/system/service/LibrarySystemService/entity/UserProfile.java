@@ -1,4 +1,5 @@
-package com.target.ready.library.system.service.LibrarySystemService.Entity;
+package com.target.ready.library.system.service.LibrarySystemService.entity;
+
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,22 +12,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class User {
-
+@Table(name = "user_profile")
+public class UserProfile {
     @Id
     @Column(name="user_id")
     @JsonProperty("user_id")
     @JsonAlias("userId")
     private int userId;
 
-    @Column(name="book_id")
-    @JsonProperty("book_id")
-    @JsonAlias("bookId")
-    private int bookId;
-
-    @Column(name="quantity")
-    @JsonProperty("quantity")
-    @JsonAlias("quantity")
-    private int quantity;
+    @Column(name="user_name")
+    @JsonProperty("user_name")
+    @JsonAlias("userName")
+    private String userName;
 }
