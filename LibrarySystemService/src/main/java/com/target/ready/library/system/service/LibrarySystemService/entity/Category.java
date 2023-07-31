@@ -1,5 +1,7 @@
-package com.target.ready.library.system.service.LibrarySystemService.Entity;
+package com.target.ready.library.system.service.LibrarySystemService.entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,12 +14,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Category {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="category_id")
+    @JsonProperty("category_id")
+    @JsonAlias("categoryId")
     private int categoryId;
     @Column(name="category_name")
+    @JsonProperty("category_name")
+    @JsonAlias("categoryName")
     private String categoryName;
+
 
 
     public String getCategoryName() {
