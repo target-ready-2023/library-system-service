@@ -26,19 +26,18 @@ public class UserController {
 
     @GetMapping("user/books/{userId}")
     public List<Integer> findBooksByUserId(@PathVariable int userId){
-       return userService.findBooksByUserId(userId);
+        return userService.findBooksByUserId(userId);
     }
 
     @DeleteMapping("user/books/{userId}/{bookId}")
     @Transactional
-    public String deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
+    public Integer deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
          return userService.deleteBookByUserId(userId, bookId);
     }
 
     @PostMapping("user/catalog")
     public UserCatalog addUserCatalog(@RequestBody UserCatalog userCatalog){
         return userService.addUserCatalog(userCatalog);
-
     }
 
     @PostMapping("user")
