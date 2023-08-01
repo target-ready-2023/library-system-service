@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 server:
   port: 8080
 
@@ -12,7 +12,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/Librarydb?sslmode=disable
     username: postgres
-    password:
+    password: Pavi@123
 
   jpa:
     generate-ddl: 'false'
@@ -31,14 +31,13 @@ spring:
           flushMode: COMMIT
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
   sql:
     init:
       continue-on-error: 'false'
       platform: postgresql
 
-=======
 #server:
 #  port: 8080
 #
@@ -78,4 +77,4 @@ spring:
 #      continue-on-error: 'false'
 #      platform: postgresql
 #
->>>>>>> 66d896c3dbf389fe1ba6dcdf524133eae64f0e7c
+
