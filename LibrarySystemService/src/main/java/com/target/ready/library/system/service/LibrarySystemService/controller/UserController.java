@@ -4,6 +4,7 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.UserC
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserCatalogRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserRepository;
+import com.target.ready.library.system.service.LibrarySystemService.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,37 +17,32 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserCatalogRepository userCatalogRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
+
 
     @GetMapping("user/books/{userId}")
     public List<Integer> findBooksByUserId(@PathVariable int userId){
-        List<UserCatalog> userCatalogs=userCatalogRepository.findByUserId(userId);
-        List<Integer> bookIds=new ArrayList<>();
-        for(UserCatalog eachUserCatalog:userCatalogs){
-            int bookId= eachUserCatalog.getBookId();
-            bookIds.add(bookId);
-        }
-        return bookIds;
+       return userService.findBooksByUserId(userId);
     }
 
     @DeleteMapping("user/books/{userId}/{bookId}")
     @Transactional
     public String deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
-         userCatalogRepository.deleteByBookIdAndUserId(bookId,userId);
-         return "Book Deleted Successfully";
+         return userService.deleteBookByUserId(userId, bookId);
     }
 
     @PostMapping("user/catalog")
     public UserCatalog addUserCatalog(@RequestBody UserCatalog userCatalog){
-        return userCatalogRepository.save(userCatalog);
+        return userService.addUserCatalog(userCatalog);
 
     }
 
     @PostMapping("user")
     public UserProfile addUser(@RequestBody UserProfile userProfile){
-        return userRepository.save(userProfile);
+        return userService.addUser(userProfile);
     }
 }
