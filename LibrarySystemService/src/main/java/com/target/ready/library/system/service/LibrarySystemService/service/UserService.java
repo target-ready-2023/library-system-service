@@ -34,9 +34,9 @@ public class UserService {
         return bookIds;
     }
 
-    public String deleteBookByUserId(int userId, int bookId){
-        userCatalogRepository.deleteByBookIdAndUserId(bookId,userId);
-        return "Book Deleted Successfully";
+    public Integer deleteBookByUserId(int userId, int bookId){
+        return userCatalogRepository.deleteByBookIdAndUserId(bookId,userId);
+
     }
 
     public UserCatalog addUserCatalog(UserCatalog userCatalog){
