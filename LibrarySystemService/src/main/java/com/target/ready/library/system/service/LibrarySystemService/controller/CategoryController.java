@@ -33,10 +33,10 @@ public class CategoryController {
         return categoryService.findByCategoryName(categoryName);
     }
 
-    @GetMapping("/category/book/{bookId}")
-    public BookCategory findByBookId(@PathVariable int bookId){
-        return categoryService.findByBookId(bookId);
-    }
+//    @GetMapping("/category/book/{bookId}")
+//    public BookCategory findByBookId(@PathVariable int bookId){
+//        return categoryService.findByBookId(bookId);
+//    }
 
     @PostMapping("inventory/book/category")
     public BookCategory addBookCategory(@RequestBody BookCategory bookCategory){
@@ -48,10 +48,18 @@ public class CategoryController {
         return categoryService.deleteBookCategory(id);
     }
 
-    @Transactional
+   @Transactional
     @DeleteMapping("inventory/delete/bookCategory/{id}")
     public String deleteCategories(@PathVariable int id){
-        return categoryService.deleteCategories(id);
+       String category="";
+        try {
+            category=categoryService.deleteCategories(id);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return category;
     }
     @GetMapping("/categories/{page_number}/{page_size}")
     public ResponseEntity<List<Category>> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
