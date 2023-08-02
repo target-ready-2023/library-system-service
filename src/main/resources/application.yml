@@ -1,4 +1,3 @@
-
 server:
   port: 8080
 
@@ -37,6 +36,7 @@ spring:
     init:
       continue-on-error: 'false'
       platform: postgresql
+
 
 #server:
 #  port: 8080

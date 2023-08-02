@@ -32,11 +32,11 @@ public class LibrarySystemService {
         this.bookCategoryRepository = bookCategoryRepository;
     }
 
-    public ResponseEntity<List<Book>> getAllBooks(int page_number, int page_size) {
+    public List<Book> getAllBooks(int page_number, int page_size) {
         Pageable pageable = PageRequest.of(page_number,page_size);
         Page<Book> findBooks = bookRepository.findAll(pageable);
         List<Book> books =  findBooks.toList();
-        return new ResponseEntity<>(books, HttpStatus.OK);
+        return books;
     }
 
     public Book addBook(Book book){return bookRepository.save(book);}
@@ -62,10 +62,10 @@ public class LibrarySystemService {
         return bookDetails;
     }
 
-    public ResponseEntity<List<Book>> findByBookName(String bookName) {
+    public List<Book> findByBookName(String bookName) {
         List<Book> books= bookRepository.findByBookName(bookName);
 
-        return new ResponseEntity<>(books, HttpStatus.OK);
+        return books;
     }
 
     public Book updateBookDetails(int id, Book book ){

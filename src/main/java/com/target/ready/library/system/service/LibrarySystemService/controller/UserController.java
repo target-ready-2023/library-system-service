@@ -7,6 +7,8 @@ import com.target.ready.library.system.service.LibrarySystemService.repository.U
 import com.target.ready.library.system.service.LibrarySystemService.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,23 +27,24 @@ public class UserController {
 
 
     @GetMapping("user/books/{userId}")
-    public List<Integer> findBooksByUserId(@PathVariable int userId){
-        return userService.findBooksByUserId(userId);
+    public ResponseEntity<List<Integer>> findBooksByUserId(@PathVariable int userId){
+        return new ResponseEntity<>(userService.findBooksByUserId(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("user/books/{userId}/{bookId}")
     @Transactional
-    public Integer deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
-         return userService.deleteBookByUserId(userId, bookId);
+    public ResponseEntity<Integer> deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
+         return new ResponseEntity<>(userService.deleteBookByUserId(userId, bookId), HttpStatus.OK);
     }
 
     @PostMapping("user/catalog")
-    public UserCatalog addUserCatalog(@RequestBody UserCatalog userCatalog){
-        return userService.addUserCatalog(userCatalog);
+    public ResponseEntity<UserCatalog> addUserCatalog(@RequestBody UserCatalog userCatalog){
+        return new ResponseEntity<>(userService.addUserCatalog(userCatalog), HttpStatus.CREATED);
     }
 
     @PostMapping("user")
-    public UserProfile addUser(@RequestBody UserProfile userProfile){
-        return userService.addUser(userProfile);
+    public ResponseEntity<UserProfile> addUser(@RequestBody UserProfile userProfile){
+
+        return new ResponseEntity<>(userService.addUser(userProfile), HttpStatus.CREATED);
     }
 }
