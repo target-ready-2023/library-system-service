@@ -4,6 +4,7 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.BookC
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,13 @@ public class CategoryController {
     }
 
     @PostMapping("inventory/category")
-    public Category addCategory(@RequestBody Category category){
-        return categoryService.addCategory(category);
+    public ResponseEntity<Category> addCategory(@RequestBody Category category){
+        return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
     }
 
     @GetMapping("/category/{categoryName}")
-    public Category findByCategoryName(@PathVariable String categoryName){
-        return categoryService.findByCategoryName(categoryName);
+    public ResponseEntity<Category> findByCategoryName(@PathVariable String categoryName){
+        return new ResponseEntity<>(categoryService.findByCategoryName(categoryName), HttpStatus.OK);
     }
 
 //    @GetMapping("/category/book/{bookId}")
@@ -39,18 +40,18 @@ public class CategoryController {
 //    }
 
     @PostMapping("inventory/book/category")
-    public BookCategory addBookCategory(@RequestBody BookCategory bookCategory){
-        return categoryService.addBookCategory(bookCategory);
+    public ResponseEntity<BookCategory> addBookCategory(@RequestBody BookCategory bookCategory){
+        return new ResponseEntity<>(categoryService.addBookCategory(bookCategory), HttpStatus.CREATED);
     }
 
     @DeleteMapping("inventory/book/category/{id}")
-    public String deleteBookCategory(@PathVariable int id){
-        return categoryService.deleteBookCategory(id);
+    public ResponseEntity<String> deleteBookCategory(@PathVariable int id){
+        return new ResponseEntity<>(categoryService.deleteBookCategory(id), HttpStatus.ACCEPTED);
     }
 
    @Transactional
     @DeleteMapping("inventory/delete/bookCategory/{id}")
-    public String deleteCategories(@PathVariable int id){
+    public ResponseEntity<String> deleteCategories(@PathVariable int id){
        String category="";
         try {
             category=categoryService.deleteCategories(id);
@@ -59,11 +60,11 @@ public class CategoryController {
         {
             System.out.println(e);
         }
-        return category;
+        return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
     }
     @GetMapping("/categories/{page_number}/{page_size}")
     public ResponseEntity<List<Category>> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
-        return categoryService.findAllCategories(page_number, page_size);
+        return new ResponseEntity<>(categoryService.findAllCategories(page_number, page_size), HttpStatus.OK);
     }
 
 
