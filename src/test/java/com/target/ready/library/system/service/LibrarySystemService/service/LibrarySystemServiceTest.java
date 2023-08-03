@@ -8,6 +8,7 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Inven
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -62,6 +63,18 @@ public class LibrarySystemServiceTest {
         assert(response.getInvBookId()==1);
     }
 
+    @Test
+    public void addInventoryTest(){
+        Inventory inventory1 = new Inventory();
+        inventory1.setInvBookId(1);
+        inventory1.setNoOfBooksLeft(2);
+        inventory1.setNoOfCopies(5);
+
+        when(inventoryRepository.save(inventory1)).thenReturn(inventory1);
+
+        Inventory response = librarySystemService.addInventory(inventory1);
+        Assertions.assertEquals(1, inventory1.getInvBookId());
+    }
     @Test
     public void findBookByCategoryNameTest() {
         List<Book> books = new ArrayList<>();
