@@ -92,11 +92,11 @@ public class CategoryService {
         return "Book category deleted";
     }
 
-    public ResponseEntity<List<Category>> findAllCategories(int page_number, int page_size){
+    public List<Category> findAllCategories(int page_number, int page_size){
         Pageable pageable = PageRequest.of(page_number,page_size);
         Page<Category> allCategories = categoryRepository.findAll(pageable);
         List<Category> categories = allCategories.toList();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+        return categories;
     }
 
     public List<BookCategory> findAllCategoriesByBookId(int bookId){
