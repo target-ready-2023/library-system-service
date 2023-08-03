@@ -60,6 +60,7 @@ public class LibrarySystemController {
 
     @GetMapping("inventory/book/{bookId}")
     public Inventory getBookById(@PathVariable int bookId){
+
         return librarySystemService.getBookById(bookId);
     }
 
