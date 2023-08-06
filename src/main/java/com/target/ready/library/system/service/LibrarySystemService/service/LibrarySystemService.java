@@ -7,6 +7,8 @@ import com.target.ready.library.system.service.LibrarySystemService.exceptions.R
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +41,11 @@ public class LibrarySystemService {
         return books;
     }
 
-    public Book addBook(Book book){return bookRepository.save(book);}
+    public Book addBook(Book book)throws DataIntegrityViolationException{
+
+           Book book1=bookRepository.save(book);
+           return book1;
+    }
 
     public String deleteBook(int bookId) {
         bookRepository.deleteById(bookId);
