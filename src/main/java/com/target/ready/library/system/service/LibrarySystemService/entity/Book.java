@@ -3,6 +3,10 @@ package com.target.ready.library.system.service.LibrarySystemService.entity;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+//import jakarta.validation.constraints.NotBlank;
+
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,9 +24,10 @@ public class Book {
     @JsonAlias("bookId")
     private int bookId;
 
-    @Column(name="book_name")
+    @Column(name="book_name",nullable = false)
     @JsonProperty("book_name")
     @JsonAlias("bookName")
+  @NotBlank(message = "Hello")
     private String bookName;
 
     @Column(name="book_description")

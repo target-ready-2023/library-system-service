@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
@@ -11,10 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("library/v1/")
 public class LibrarySystemController {
 
@@ -32,13 +35,12 @@ public class LibrarySystemController {
     }
 
     @PostMapping("inventory/books")
-    public ResponseEntity<?> addBook(@RequestBody Book book){
+    public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
         try {
-            return new ResponseEntity<>(librarySystemService.addBook(book), HttpStatus.CREATED);
-        } catch ( DataIntegrityViolationException e) {
+            Book addedBook = librarySystemService.addBook(book);
+            return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>("Book already exists with same name and author name", HttpStatus.CONFLICT);
-
-
         }
     }
 
