@@ -2,11 +2,13 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,12 +36,17 @@ public class CategoryService {
         this.bookCategoryRepository = bookCategoryRepository;
     }
 
-    public Category addCategory(Category category){
+    public Category addCategory(Category category) throws DataIntegrityViolationException {
         return categoryRepository.save(category);
     }
 
-    public Category findByCategoryName(String categoryName){
-        return categoryRepository.findByCategoryName(categoryName);
+    public Category findByCategoryName(String categoryName) {
+         Category categor1=categoryRepository.findByCategoryName(categoryName);
+
+         if(categor1==null){
+             throw new ResourceNotFoundException("Category not found with given category name");
+         }
+        return categor1;
     }
 
     public BookCategory findByBookId(int bookId){
@@ -101,6 +108,9 @@ public class CategoryService {
 
     public List<BookCategory> findAllCategoriesByBookId(int bookId){
         List<BookCategory> bookCategory=bookCategoryRepository.findAllCategoriesByBookId(bookId);
+        if(bookCategory.isEmpty()){
+            throw new ResourceNotFoundException("Categories of the given book does not exists");
+        }
         return bookCategory;
     }
 

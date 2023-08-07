@@ -2,8 +2,10 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,13 +27,21 @@ public class CategoryController {
     }
 
     @PostMapping("inventory/category")
-    public ResponseEntity<Category> addCategory(@RequestBody Category category){
-        return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
+    public ResponseEntity<?> addCategory(@RequestBody Category category){
+        try {
+            return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+           return new ResponseEntity<>("Category already exists",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/category/{categoryName}")
-    public ResponseEntity<Category> findByCategoryName(@PathVariable String categoryName){
-        return new ResponseEntity<>(categoryService.findByCategoryName(categoryName), HttpStatus.OK);
+    public ResponseEntity<?> findByCategoryName(@PathVariable String categoryName){
+        try {
+            return new ResponseEntity<>(categoryService.findByCategoryName(categoryName), HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+           return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
     }
 
 //    @GetMapping("/category/book/{bookId}")
@@ -63,20 +73,23 @@ public class CategoryController {
         return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
     }
     @GetMapping("/categories/{page_number}/{page_size}")
-    public ResponseEntity<List<Category>> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
-        return new ResponseEntity<>(categoryService.findAllCategories(page_number, page_size), HttpStatus.OK);
+    public ResponseEntity<?> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
+
+            return new ResponseEntity<>(categoryService.findAllCategories(page_number, page_size), HttpStatus.OK);
+
     }
 
 
     @GetMapping("categories/{bookId}")
-    public ResponseEntity<List<BookCategory>> findAllCategoriesByBookId(@PathVariable int bookId) {
-        List<BookCategory> categories = categoryService.findAllCategoriesByBookId(bookId);
-
-        if (categories.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> findAllCategoriesByBookId(@PathVariable int bookId) {
+        try {
+            return new ResponseEntity<>(categoryService.findAllCategoriesByBookId(bookId),HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(categories);
+
     }
 
 }
