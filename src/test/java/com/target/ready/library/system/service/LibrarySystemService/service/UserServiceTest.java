@@ -49,6 +49,31 @@ public class UserServiceTest {
         assert(userService.addUserCatalog(user).getId() == 1);
     }
 
+    @Test
+    public void findBooksByUserIdTest(){
+        int userId = 1;
+        List<UserCatalog> userCatalogs = new ArrayList<>();
+        userCatalogs.add(new UserCatalog(1, userId, 1));
+        when(userCatalogRepository.findByUserId(userId)).thenReturn(userCatalogs);
+
+        List<Integer> bookIds = userService.findBooksByUserId(userId);
+
+        List<Integer> expectedBookIds = new ArrayList<>();
+        expectedBookIds.add(1);
+
+        assertEquals(expectedBookIds, bookIds);
+    }
+
+    @Test
+    public void deleteBookByUserIdTest(){
+        UserCatalog user = new UserCatalog();
+        user.setId(1);
+        user.setUserId(1);
+        user.setBookId(1);
+        when(userCatalogRepository.deleteByBookIdAndUserId(user.getBookId(),user.getUserId())).thenReturn(user.getUserId());
+        assert(userService.deleteBookByUserId(user.getUserId(),user.getBookId()) == 1);
+    }
+
 }
 
 

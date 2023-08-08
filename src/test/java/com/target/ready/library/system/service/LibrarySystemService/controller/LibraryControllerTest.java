@@ -5,13 +5,17 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Inven
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.*;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,6 +153,21 @@ public class LibraryControllerTest {
         ResponseEntity<String> response = librarySystemController.deleteBook(book.getBookId());
         assertEquals(response.getStatusCode(),HttpStatus.ACCEPTED);
         assertEquals(response.getBody(),"Book Deleted Successfully");
+    }
+
+
+    @Test
+    public void addBookTest(){
+       Book book=new Book();
+       book.setBookId(1);
+        book.setAuthorName("Devdutta Pattanaik");
+        book.setBookName("Jaya : An Illustrated Retelling of Mahabharata");
+        book.setBookDescription("This presents precisely that fresh perspective on the epic saga of Mahabharata");
+        book.setPublicationYear(2023);
+        when(librarySystemService.addBook(book)).thenReturn(book);
+        ResponseEntity<?> response=librarySystemController.addBook(book);
+        assertEquals(HttpStatus.CREATED,response.getStatusCode());
+        assertEquals(book,response.getBody());
     }
 
 }
