@@ -75,6 +75,15 @@ public class LibrarySystemController {
         return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName,pageNumber,pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("/books/category/total_count/{categoryName}")
+    public ResponseEntity<Long> getTotalBookCategoryCount(@PathVariable String categoryName) {
+        try {
+            long totalCount = librarySystemService.getTotalBookCategoryCount(categoryName);
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(0L, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("books/{bookName}")
     public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) {

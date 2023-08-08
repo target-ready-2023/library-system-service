@@ -41,6 +41,10 @@ public class LibrarySystemService {
         return books;
     }
 
+    public long getTotalBookCount() {
+        return bookRepository.count();
+    }
+
     public Book addBook(Book book)throws DataIntegrityViolationException{
 
            Book book1=bookRepository.save(book);
@@ -68,6 +72,10 @@ public class LibrarySystemService {
         return bookDetails;
     }
 
+    public long getTotalBookCategoryCount(String categoryName) {
+        return bookCategoryRepository.countBooksByCategoryName(categoryName);
+    }
+
     public List<Book> findBookByCategoryName(String categoryName , int pageNumber,int pageSize){
         Page<BookCategory> bookCategory;
         List<Book> bookDetails = new ArrayList<>();
@@ -82,9 +90,6 @@ public class LibrarySystemService {
         return bookDetails;
     }
 
-    public long getTotalBookCount() {
-        return bookRepository.count();
-    }
 
     public List<Book> findByBookName(String bookName) {
         List<Book> books= bookRepository.findByBookName(bookName);
