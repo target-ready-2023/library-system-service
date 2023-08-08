@@ -33,6 +33,15 @@ public class LibrarySystemController {
     public ResponseEntity<List<Book>> getAllBooks(@PathVariable int page_number, @PathVariable int page_size) {
         return new ResponseEntity<>(librarySystemService.getAllBooks(page_number,page_size),HttpStatus.OK);
     }
+    @GetMapping("/books_directory/total_count")
+    public ResponseEntity<Long> getTotalBookCount() {
+        try {
+            long totalCount = librarySystemService.getTotalBookCount();
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(0L, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("inventory/books")
     public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
@@ -56,10 +65,16 @@ public class LibrarySystemController {
     }
 
 
-    @GetMapping("book/category/{categoryName}")
-    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName){
-        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName), HttpStatus.OK);
+//    @GetMapping("book/category/{categoryName}")
+//    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName){
+//        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName), HttpStatus.OK);
+//    }
+
+    @GetMapping("book/category/{categoryName}/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName, @PathVariable int pageNumber, @PathVariable int pageSize){
+        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName,pageNumber,pageSize), HttpStatus.OK);
     }
+
 
     @GetMapping("books/{bookName}")
     public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) {

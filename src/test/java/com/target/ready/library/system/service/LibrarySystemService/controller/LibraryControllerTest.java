@@ -26,26 +26,24 @@ public class LibraryControllerTest {
     @InjectMocks
     LibrarySystemController librarySystemController;
 
-//    @Test
-//    public void testGetAllBooks() throws Exception{
-//        List<Book> records = new ArrayList<Book>();
-//        records.add(new Book(1,
-//                "Five Point someone",
-//                "Semi-autobiographical"
-//                ,"Chetan Bhagat",2004));
-//        records.add(new Book(2,
-//                "The Silent Patient",
-//                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
-//        );
-//
-//        Pageable pageable = PageRequest.of(0,5);
-//        Page<Book> page = new PageImpl<>(records, pageable, records.size());
-//        when(bookRepository.findAll(pageable)).thenReturn(page);
-//        ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(2, response.getBody().size());
-//        }
-//
+    @Test
+    public void testGetAllBooks() throws Exception{
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+
+        when(librarySystemService.getAllBooks(0,5)).thenReturn(records);
+        ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(records.size(), response.getBody().size());
+        }
+
 
     @Test
     public void findByBookIdTest(){
@@ -85,7 +83,7 @@ public class LibraryControllerTest {
         Inventory response = librarySystemController.addInventory(inventory1).getBody();
         assertEquals(1, inventory1.getInvBookId());
     }
-
+    @Test
     public void findBookByCategoryNameTest() {
         List<Book> books = new ArrayList<>();
         List<BookCategory> bookCategories = new ArrayList<>();
@@ -112,8 +110,8 @@ public class LibraryControllerTest {
         bookCategory2.setId(2);
         bookCategories.add(bookCategory2);
 
-        when(librarySystemService.findBookByCategoryName("Sci-Fi")).thenReturn(returnBooks);
-        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName());
+        when(librarySystemService.findBookByCategoryName("Sci-Fi",0,5)).thenReturn(returnBooks);
+        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName(),0,5);
         assertEquals(response.getBody(), returnBooks);
     }
 

@@ -30,7 +30,6 @@ public class UserCatalog{
     private int userId;
 
 
-
     @Column(name="book_id")
     @JsonProperty("book_id")
     @JsonAlias("bookId")

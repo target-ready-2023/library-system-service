@@ -13,6 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +55,25 @@ public class LibrarySystemServiceTest {
         Book response=librarySystemService.findByBookId(1);
         assert(response.getBookId()==1);
     }
+    @Test
+    public void getAllBooksTest(){
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
 
+        Pageable pageable = PageRequest.of(0,5);
+        Page<Book> page = new PageImpl<>(records, pageable, records.size());
+        when(bookRepository.findAll(pageable)).thenReturn(page);
+        List<Book> books =librarySystemService.getAllBooks(0,5);
+        assertEquals(page.getTotalElements(), books.size());
+
+    }
     @Test
     public void getBookByIdTest(){
         Inventory inventory = new Inventory();
@@ -78,46 +100,23 @@ public class LibrarySystemServiceTest {
     }
     @Test
     public void findBookByCategoryNameTest() {
-        List<Book> books = new ArrayList<>();
-        List<BookCategory> bookCategories = new ArrayList<>();
-        List<BookCategory> result = new ArrayList<>();
-        Book book1 = new Book(1,
-                "Harry Potter and the Philosopher's Stone",
-                "Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry."
-                , "J. K. Rowling", 1997);
-        books.add(book1);
-        BookCategory bookCategory1 = new BookCategory();
-        bookCategory1.setCategoryName("Fiction");
-        bookCategory1.setBookId(1);
-        bookCategory1.setId(1);
-        bookCategories.add(bookCategory1);
 
-        Book book2 = new Book(2,
-                "The Immortals of Meluha",
-                "follows the story of a man named Shiva, who lives in the Tibetan region – Mount Kailash."
-                , "Amish Tripathi", 2010);
-        books.add(book2);
+        List<BookCategory> bookCategories = new ArrayList<BookCategory>();
+
+        bookCategories.add(new BookCategory(1,1,"fiction"));
+        bookCategories.add(new BookCategory(2,2,"Sci-fi"));
+
         BookCategory bookCategory2 = new BookCategory();
-        bookCategory2.setCategoryName("Sci-Fi");
+        bookCategory2.setCategoryName("Sci-fi");
         bookCategory2.setBookId(2);
         bookCategory2.setId(2);
         bookCategories.add(bookCategory2);
 
-        List<Integer> iDfromRes = new ArrayList<>();
-        List<Integer> iDfromResp = new ArrayList<>();
-
-        when(bookCategoryRepository.findByCategoryName("Sci-Fi")).thenReturn(result);
-        List<Book> response = librarySystemService.findBookByCategoryName(bookCategory1.getCategoryName());
-        for(BookCategory bookCategory : result){
-            int b1 = bookCategory.getBookId();
-            iDfromRes.add(b1);
-        }
-        for(Book book : response){
-            int b1 = book.getBookId();
-            iDfromResp.add(b1);
-        }
-        assertEquals(response.size(), result.size());
-        assertEquals(iDfromRes,iDfromRes);
+        Pageable pageable = PageRequest.of(0,5);
+        Page<BookCategory> page = new PageImpl<>(bookCategories, pageable, bookCategories.size());
+        when(bookCategoryRepository.findByCategoryName("Sci-fi",pageable)).thenReturn(page);
+        List<Book> response = librarySystemService.findBookByCategoryName(bookCategory2.getCategoryName(),0,5);
+        assertEquals( page.getTotalElements(),response.size());
     }
 
     @Test
