@@ -10,7 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {UserControllerTest.class})
@@ -42,5 +46,34 @@ public class UserControllerTest {
        ResponseEntity<UserCatalog> response = userController.addUserCatalog(user);
        assertEquals(HttpStatus.CREATED, response.getStatusCode());
    }
+
+    @Test
+    public void findBooksByUserIdTest() {
+        int userId = 1;
+        List<Integer> bookIds = new ArrayList<>();
+        bookIds.add(1);
+        when(userService.findBooksByUserId(userId)).thenReturn(bookIds);
+
+        ResponseEntity<List<Integer>> response = userController.findBooksByUserId(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Integer> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(bookIds, responseBody);
+    }
+
+    @Test
+    public void deleteBookByUserIdTest(){
+        int userId = 3;
+        int bookId = 1;
+        when(userService.deleteBookByUserId(userId, bookId)).thenReturn(userId);
+
+        ResponseEntity<Integer> response = userController.deleteBookByUserId(userId, bookId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Integer responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(userId, responseBody);
+    }
 
 }

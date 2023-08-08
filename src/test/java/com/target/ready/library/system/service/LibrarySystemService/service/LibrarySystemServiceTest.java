@@ -13,6 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,4 +179,28 @@ public class LibrarySystemServiceTest {
         librarySystemService.deleteBook(1);
         assertEquals(books.size(),1);
     }
+
+
+
+
+
+    @Test
+    public void addBookTest(){
+        Book book=new Book();
+        book.setAuthorName("Devdutta Pattanaik");
+        book.setBookName("Jaya : An Illustrated Retelling of Mahabharata");
+        book.setBookDescription("This presents precisely that fresh perspective on the epic saga of Mahabharata");
+        book.setPublicationYear(2023);
+        when(bookRepository.save(book)).thenAnswer(invocation -> {
+            Book book1=invocation.getArgument(0);
+            book1.setBookId(1);
+            return book1;
+        });
+        Book savedBook=librarySystemService.addBook(book);
+        assertEquals(book.getBookId(),savedBook.getBookId());
+        assertEquals(book,savedBook);
+    }
+
+
+
 }
