@@ -1,6 +1,8 @@
 package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +47,8 @@ public class LibrarySystemController {
 
     @PostMapping("inventory/books")
     public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
-        try {
             Book addedBook = librarySystemService.addBook(book);
             return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Book already exists with same name and author name", HttpStatus.CONFLICT);
-        }
     }
 
     @DeleteMapping("book/{bookId}")
