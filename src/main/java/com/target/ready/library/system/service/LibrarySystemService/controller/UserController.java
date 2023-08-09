@@ -39,6 +39,7 @@ public class UserController {
 
     @PostMapping("user/catalog")
     public ResponseEntity<UserCatalog> addUserCatalog(@RequestBody UserCatalog userCatalog){
+
         return new ResponseEntity<>(userService.addUserCatalog(userCatalog), HttpStatus.CREATED);
     }
 
