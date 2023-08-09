@@ -2,9 +2,12 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserCatalog;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserCatalogRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,11 +43,26 @@ public class UserService {
     }
 
     public UserCatalog addUserCatalog(UserCatalog userCatalog){
-        return userCatalogRepository.save(userCatalog);
+        try {
+            UserProfile userProfile=userRepository.findByUserId(userCatalog.getUserId());
+            if(userProfile==null){
+                throw new ResourceNotFoundException("Student does not exists");
+            }
+            return userCatalogRepository.save(userCatalog);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException("The student already has the given book");
+        }
 
     }
 
     public UserProfile addUser(UserProfile userProfile){
-        return userRepository.save(userProfile);
+       UserProfile userProfile1=userRepository.findById(userProfile.getUserId()).orElse(null);
+        if (userProfile1==null) {
+            return userRepository.save(userProfile);
+        }
+        else{
+            throw new ResourceAlreadyExistsException("User already Exists");
+        }
+
     }
 }

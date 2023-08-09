@@ -26,20 +26,14 @@ public class CategoryController {
 
     @PostMapping("inventory/category")
     public ResponseEntity<?> addCategory(@RequestBody Category category){
-        try {
             return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
-           return new ResponseEntity<>("Category already exists",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<?> findByCategoryName(@PathVariable String categoryName){
-        try {
             return new ResponseEntity<>(categoryService.findByCategoryName(categoryName), HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-           return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
+
     }
 
 //    @GetMapping("/category/book/{bookId}")
@@ -80,12 +74,9 @@ public class CategoryController {
 
     @GetMapping("categories/{bookId}")
     public ResponseEntity<?> findAllCategoriesByBookId(@PathVariable int bookId) {
-        try {
+
             return new ResponseEntity<>(categoryService.findAllCategoriesByBookId(bookId),HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
+
 
 
     }
