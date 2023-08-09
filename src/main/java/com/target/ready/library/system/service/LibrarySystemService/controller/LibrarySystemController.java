@@ -1,6 +1,7 @@
 package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,14 @@ public class LibrarySystemController {
 
     @DeleteMapping("book/{bookId}")
     public ResponseEntity<String> deleteBook(@PathVariable int bookId) {
-        return new ResponseEntity<>(librarySystemService.deleteBook(bookId), HttpStatus.ACCEPTED);
+        try {
+            String deletionResult = librarySystemService.deleteBook(bookId);
+            return new ResponseEntity<>(deletionResult, HttpStatus.ACCEPTED);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("book/{bookId}")

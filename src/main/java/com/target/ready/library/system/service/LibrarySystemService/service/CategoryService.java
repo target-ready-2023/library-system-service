@@ -64,38 +64,26 @@ public class CategoryService {
 
     @Transactional
     public String deleteCategories(int id) throws InterruptedException {
-//        List<BookCategory> bookCategories = bookCategoryRepository.findAllCategoriesByBookId(id);
-
         lock.lock();
         try{
             List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(id);
             bookCategoryRepository.flush();
             Thread.sleep(3000);
-            for (BookCategory bookCategory:bookCategories
-            ) {
+            for (BookCategory bookCategory:bookCategories) {
                 String categoryName=bookCategory.getCategoryName();
                 List<BookCategory> bookCategories1=bookCategoryRepository.findByCategoryName(categoryName);
-                System.out.println("Before"+bookCategories1);
                 if(bookCategories1.isEmpty()) {
-                    System.out.println("After"+bookCategories1);
                     categoryRepository.deleteByCategoryName(categoryName);
                 }
-
             }
             Thread.sleep(2000);
-
         }
         catch(Exception e){
-            System.out.println(e);
+            throw new RuntimeException("Failed to delete categories", e);
         }
         finally {
             lock.unlock();
         }
-
-
-
-
-
         return "Book category deleted";
     }
 

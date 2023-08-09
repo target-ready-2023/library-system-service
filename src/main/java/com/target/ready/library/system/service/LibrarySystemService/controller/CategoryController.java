@@ -63,12 +63,12 @@ public class CategoryController {
        String category="";
         try {
             category=categoryService.deleteCategories(id);
+            return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            return new ResponseEntity<>("An error occurred while deleting the category", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
     }
     @GetMapping("/categories/{page_number}/{page_size}")
     public ResponseEntity<?> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
