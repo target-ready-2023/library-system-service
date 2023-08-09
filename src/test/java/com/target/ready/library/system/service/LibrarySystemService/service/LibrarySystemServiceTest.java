@@ -78,6 +78,22 @@ public class LibrarySystemServiceTest {
 
     }
     @Test
+    public void getTotalBookCountTest() {
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+        long repoCount=0;
+        when(bookRepository.count()).thenReturn(repoCount);
+        long serviceCount=librarySystemService.getTotalBookCount();
+        assertEquals(repoCount,serviceCount);
+    }
+    @Test
     public void getBookByIdTest(){
         Inventory inventory = new Inventory();
         inventory.setInvBookId(1);
@@ -121,6 +137,25 @@ public class LibrarySystemServiceTest {
         List<Book> response = librarySystemService.findBookByCategoryName(bookCategory2.getCategoryName(),0,5);
         assertEquals( page.getTotalElements(),response.size());
     }
+    @Test
+    public void getTotalBookCategoryCountTest() {
+        List<BookCategory> bookCategories = new ArrayList<BookCategory>();
+
+        bookCategories.add(new BookCategory(1,1,"fiction"));
+        bookCategories.add(new BookCategory(2,2,"fiction"));
+
+        BookCategory bookCategory2 = new BookCategory();
+        bookCategory2.setCategoryName("Sci-fi");
+        bookCategory2.setBookId(2);
+        bookCategory2.setId(2);
+        bookCategories.add(bookCategory2);
+
+        long repoCount=0;
+        when(bookCategoryRepository.countBooksByCategoryName("fiction")).thenReturn(repoCount);
+        long serviceCount=librarySystemService.getTotalBookCategoryCount("fiction");
+        assertEquals(repoCount,serviceCount);
+    }
+
 
     @Test
     public void findByBookNameTest(){
