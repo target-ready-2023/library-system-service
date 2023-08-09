@@ -20,4 +20,7 @@ public interface BookCategoryRepository extends JpaRepository<BookCategory,Integ
     List<BookCategory> findByCategoryName(String categoryName);
     Page<BookCategory> findByCategoryName(String categoryName, Pageable pageable);
     long countBooksByCategoryName(String categoryName);
+
 }
+
+
