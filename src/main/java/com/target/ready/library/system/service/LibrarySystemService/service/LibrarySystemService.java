@@ -3,7 +3,6 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
-import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
@@ -42,15 +41,14 @@ public class LibrarySystemService {
         return books;
     }
 
-    public Book addBook(Book book){
-        try {
-            Book book1 = bookRepository.save(book);
-            return book1;
-        }
-        catch (DataIntegrityViolationException ex){
-            throw new ResourceAlreadyExistsException("Book Already Exists with same name and author name");
-        }
+    public long getTotalBookCount() {
+        return bookRepository.count();
+    }
 
+    public Book addBook(Book book)throws DataIntegrityViolationException{
+
+        Book book1=bookRepository.save(book);
+        return book1;
     }
 
     public String deleteBook(int bookId) {
@@ -74,6 +72,25 @@ public class LibrarySystemService {
         return bookDetails;
     }
 
+    public long getTotalBookCategoryCount(String categoryName) {
+        return bookCategoryRepository.countBooksByCategoryName(categoryName);
+    }
+
+    public List<Book> findBookByCategoryName(String categoryName , int pageNumber,int pageSize){
+        Page<BookCategory> bookCategory;
+        List<Book> bookDetails = new ArrayList<>();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        bookCategory = bookCategoryRepository.findByCategoryName(categoryName, pageable);
+        List<BookCategory> books = bookCategory.toList();
+        for(BookCategory bookCategory1 : books){
+            int b1 = bookCategory1.getBookId();
+            Book book = findByBookId(b1);
+            bookDetails.add(book);
+        }
+        return bookDetails;
+    }
+
+
     public List<Book> findByBookName(String bookName) {
         List<Book> books= bookRepository.findByBookName(bookName);
 
@@ -91,16 +108,10 @@ public class LibrarySystemService {
     }
 
     public Inventory getBookById(int bookId){
-
-        return inventoryRepository.findById(bookId).orElseThrow(()->new ResourceNotFoundException("Book doesn't exists"));
-
+        return inventoryRepository.findById(bookId).orElse(null);
     }
 
-    public Inventory addInventory(Inventory inventory) {
-        try {
-            return inventoryRepository.save(inventory);
-        } catch (DataIntegrityViolationException e) {
-            throw new ResourceAlreadyExistsException("Book already Exists");
-        }
+    public Inventory addInventory(Inventory inventory){
+        return inventoryRepository.save(inventory);
     }
 }
