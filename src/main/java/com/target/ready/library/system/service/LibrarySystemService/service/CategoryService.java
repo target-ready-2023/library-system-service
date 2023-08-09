@@ -113,6 +113,9 @@ public class CategoryService {
         Pageable pageable = PageRequest.of(page_number,page_size);
         Page<Category> allCategories = categoryRepository.findAll(pageable);
         List<Category> categories = allCategories.toList();
+        if(categories.isEmpty()){
+            throw new ResourceNotFoundException("No category available currently!");
+        }
         return categories;
     }
 
