@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
@@ -36,8 +37,12 @@ public class CategoryService {
         this.bookCategoryRepository = bookCategoryRepository;
     }
 
-    public Category addCategory(Category category) throws DataIntegrityViolationException {
-        return categoryRepository.save(category);
+    public Category addCategory(Category category) {
+        try {
+            return categoryRepository.save(category);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException("Category already exists");
+        }
     }
 
     public Category findByCategoryName(String categoryName) {
@@ -54,7 +59,12 @@ public class CategoryService {
     }
 
     public BookCategory addBookCategory(BookCategory bookCategory){
-        return bookCategoryRepository.save(bookCategory);
+
+        try {
+            return bookCategoryRepository.save(bookCategory);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException("Given book with given category already exists");
+        }
     }
 
     public String deleteBookCategory(int id){
