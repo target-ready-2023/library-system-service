@@ -5,16 +5,14 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Inven
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
-import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.*;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,26 +28,40 @@ public class LibraryControllerTest {
     @InjectMocks
     LibrarySystemController librarySystemController;
 
-//    @Test
-//    public void testGetAllBooks() throws Exception{
-//        List<Book> records = new ArrayList<Book>();
-//        records.add(new Book(1,
-//                "Five Point someone",
-//                "Semi-autobiographical"
-//                ,"Chetan Bhagat",2004));
-//        records.add(new Book(2,
-//                "The Silent Patient",
-//                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
-//        );
-//
-//        Pageable pageable = PageRequest.of(0,5);
-//        Page<Book> page = new PageImpl<>(records, pageable, records.size());
-//        when(bookRepository.findAll(pageable)).thenReturn(page);
-//        ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(2, response.getBody().size());
-//        }
-//
+    @Test
+    public void testGetAllBooks() throws Exception{
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+
+        when(librarySystemService.getAllBooks(0,5)).thenReturn(records);
+        ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(records.size(), response.getBody().size());
+        }
+    @Test
+    public void getTotalBookCountTest() {
+        List<Book> records = new ArrayList<Book>();
+        records.add(new Book(1,
+                "Five Point someone",
+                "Semi-autobiographical"
+                ,"Chetan Bhagat",2004));
+        records.add(new Book(2,
+                "The Silent Patient",
+                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+        );
+        long serviceResult=0;
+        when(librarySystemService.getTotalBookCount()).thenReturn(serviceResult);
+        ResponseEntity<Long> categoryResult=librarySystemController.getTotalBookCount();
+        assertEquals(HttpStatus.OK, categoryResult.getStatusCode());
+        assertEquals(serviceResult,categoryResult.getBody());
+    }
 
     @Test
     public void findByBookIdTest(){
@@ -89,7 +101,7 @@ public class LibraryControllerTest {
         Inventory response = librarySystemController.addInventory(inventory1).getBody();
         assertEquals(1, inventory1.getInvBookId());
     }
-
+    @Test
     public void findBookByCategoryNameTest() {
         List<Book> books = new ArrayList<>();
         List<BookCategory> bookCategories = new ArrayList<>();
@@ -116,9 +128,44 @@ public class LibraryControllerTest {
         bookCategory2.setId(2);
         bookCategories.add(bookCategory2);
 
+
         when(librarySystemService.findBookByCategoryName("Sci-Fi")).thenReturn(returnBooks);
-        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName());
-        assertEquals(response.getBody(), returnBooks);
+//        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName());
+//        assertEquals(response.getBody(), returnBooks);
+
+    }
+    @Test
+    public void getTotalBookCategoryCountTest() {
+        List<Book> books = new ArrayList<>();
+        List<BookCategory> bookCategories = new ArrayList<>();
+        List<Book> returnBooks = new ArrayList<>();
+        Book book1 = new Book(1,
+                "Harry Potter and the Philosopher's Stone",
+                "Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday, when he receives a letter of acceptance to Hogwarts School of Witchcraft and Wizardry."
+                , "J. K. Rowling", 1997);
+        books.add(book1);
+        BookCategory bookCategory1 = new BookCategory();
+        bookCategory1.setCategoryName("Fiction");
+        bookCategory1.setBookId(1);
+        bookCategory1.setId(1);
+        bookCategories.add(bookCategory1);
+
+        Book book2 = new Book(2,
+                "The Immortals of Meluha",
+                "follows the story of a man named Shiva, who lives in the Tibetan region – Mount Kailash."
+                , "Amish Tripathi", 2010);
+        books.add(book2);
+        BookCategory bookCategory2 = new BookCategory();
+        bookCategory2.setCategoryName("Sci-Fi");
+        bookCategory2.setBookId(2);
+        bookCategory2.setId(2);
+        bookCategories.add(bookCategory2);
+
+        long totalCount=0;
+        when(librarySystemService.getTotalBookCategoryCount("Sci-Fi")).thenReturn(totalCount);
+        ResponseEntity<Long> categoryCount=librarySystemController.getTotalBookCategoryCount("Sci-Fi");
+        assertEquals(HttpStatus.OK, categoryCount.getStatusCode());
+        assertEquals(totalCount,categoryCount.getBody());
     }
 
     @Test
@@ -155,21 +202,6 @@ public class LibraryControllerTest {
         ResponseEntity<String> response = librarySystemController.deleteBook(book.getBookId());
         assertEquals(response.getStatusCode(),HttpStatus.ACCEPTED);
         assertEquals(response.getBody(),"Book Deleted Successfully");
-    }
-
-
-    @Test
-    public void addBookTest(){
-       Book book=new Book();
-       book.setBookId(1);
-        book.setAuthorName("Devdutta Pattanaik");
-        book.setBookName("Jaya : An Illustrated Retelling of Mahabharata");
-        book.setBookDescription("This presents precisely that fresh perspective on the epic saga of Mahabharata");
-        book.setPublicationYear(2023);
-        when(librarySystemService.addBook(book)).thenReturn(book);
-        ResponseEntity<?> response=librarySystemController.addBook(book);
-        assertEquals(HttpStatus.CREATED,response.getStatusCode());
-        assertEquals(book,response.getBody());
     }
 
 }

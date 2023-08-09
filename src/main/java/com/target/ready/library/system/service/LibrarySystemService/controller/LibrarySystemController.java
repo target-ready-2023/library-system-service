@@ -2,6 +2,8 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +36,20 @@ public class LibrarySystemController {
     public ResponseEntity<List<Book>> getAllBooks(@PathVariable int page_number, @PathVariable int page_size) {
         return new ResponseEntity<>(librarySystemService.getAllBooks(page_number,page_size),HttpStatus.OK);
     }
+    @GetMapping("/books_directory/total_count")
+    public ResponseEntity<Long> getTotalBookCount() {
+        try {
+            long totalCount = librarySystemService.getTotalBookCount();
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(0L, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("inventory/books")
     public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
-        try {
             Book addedBook = librarySystemService.addBook(book);
             return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Book already exists with same name and author name", HttpStatus.CONFLICT);
-        }
     }
 
     @DeleteMapping("book/{bookId}")
@@ -64,9 +71,24 @@ public class LibrarySystemController {
     }
 
 
-    @GetMapping("book/category/{categoryName}")
-    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName){
-        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName), HttpStatus.OK);
+//    @GetMapping("book/category/{categoryName}")
+//    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName){
+//        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName), HttpStatus.OK);
+//    }
+
+    @GetMapping("book/category/{categoryName}/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName, @PathVariable int pageNumber, @PathVariable int pageSize){
+        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName,pageNumber,pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/books/category/total_count/{categoryName}")
+    public ResponseEntity<Long> getTotalBookCategoryCount(@PathVariable String categoryName) {
+        try {
+            long totalCount = librarySystemService.getTotalBookCategoryCount(categoryName);
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(0L, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("books/{bookName}")

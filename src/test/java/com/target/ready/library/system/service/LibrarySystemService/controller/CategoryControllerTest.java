@@ -33,7 +33,15 @@ public class CategoryControllerTest {
     CategoryController categoryController;
 
     @Test
-    public void getAllCategoryTest(){
+    public void findAllCategoriesTest(){
+        List<Category> myCategory = new ArrayList<>();
+        myCategory.add(new Category(1,"Horror"));
+        myCategory.add(new Category(2,"Thriller"));
+        when(categoryService.findAllCategories(0,5)).thenReturn(myCategory);
+        ResponseEntity<?> mockController = categoryController.findAllCategories(0,5);
+        List<Category> categoriesSize = (List<Category>) mockController.getBody();
+        assertEquals(HttpStatus.OK,mockController.getStatusCode());
+        assertEquals(2,categoriesSize.size());
 
     }
 
