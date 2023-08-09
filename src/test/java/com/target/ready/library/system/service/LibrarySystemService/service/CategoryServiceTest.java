@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,18 @@ public class CategoryServiceTest {
 
     @InjectMocks
     CategoryService categoryService;
+
+    @Test
+    public void findAllCategoriesTest() throws Exception{
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(new Category(1, "Thriller"));
+        categoryList.add(new Category(2,"Horror"));
+        categoryList.add(new Category(3, "Suspense"));
+        Page<Category> page = new PageImpl<>(categoryList, PageRequest.of(0, 5), categoryList.size());
+        when(categoryRepository.findAll(PageRequest.of(0, 5))).thenReturn(page);
+        List<Category> result = categoryService.findAllCategories(0, 5);
+        assertEquals(3, result.size());
+    }
 
     @Test
     public void findAllCategoriesByBookIdTest(){
