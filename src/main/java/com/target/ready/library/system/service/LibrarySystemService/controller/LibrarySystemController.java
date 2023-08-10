@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -85,7 +87,11 @@ public class LibrarySystemController {
 
     @GetMapping("books/{bookName}")
     public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) {
-        return new ResponseEntity<>(librarySystemService.findByBookName(bookName), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(librarySystemService.findByBookName(bookName), HttpStatus.OK);
+        }catch (ResourceNotFoundException e){
+            return  new ResponseEntity<>(Collections.emptyList(),HttpStatus.OK);
+        }
     }
 
     @PutMapping("inventory/book/update/{id}")

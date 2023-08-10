@@ -127,7 +127,7 @@ public class CategoryControllerTest {
 
        when(categoryService.deleteBookCategory(bookCategory.getId())).thenReturn("Deleted");
 
-        ResponseEntity<String> response=categoryController.deleteBookCategory(2);
+        ResponseEntity<String> response=categoryController.deleteBookCategory(1);
         assertEquals("Deleted",response.getBody());
         assertEquals(HttpStatus.ACCEPTED,response.getStatusCode());
     }
