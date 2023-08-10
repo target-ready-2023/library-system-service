@@ -103,7 +103,7 @@ public class LibrarySystemService {
         return books;
     }
 
-    public Book updateBookDetails(int id, Book book ){
+    public Book updateBookDetails(int id, Book book ) throws DataIntegrityViolationException{
         Book previousBook = bookRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException("Book with bookID: "+ id + " not found in database"));
         previousBook.setBookName(book.getBookName());
