@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {UserServiceTest.class})
 public class UserServiceTest {
@@ -77,6 +76,30 @@ public class UserServiceTest {
         user.setBookId(1);
         when(userCatalogRepository.deleteByBookIdAndUserId(user.getBookId(),user.getUserId())).thenReturn(user.getUserId());
         assert(userService.deleteBookByUserId(user.getUserId(),user.getBookId()) == 1);
+    }
+
+    @Test
+    public void deleteUserTest(){
+        int userId = 1;
+
+        when(userRepository.findByUserId(userId)).thenReturn(new UserProfile());
+        when(userCatalogRepository.findByUserId(userId)).thenReturn(new ArrayList<>());
+        int result = userService.deleteUser(userId);
+        verify(userRepository).findByUserId(userId);
+        verify(userRepository).deleteByUserId(userId);
+        verify(userCatalogRepository).findByUserId(userId);
+        assertEquals(userId, result);
+
+
+    }
+
+    @Test
+    public void findByUserIdTest(){
+        UserProfile user = new UserProfile();
+        user.setUserId(1);
+        user.setUserName("Rohit");
+        when(userRepository.findByUserId(user.getUserId())).thenReturn(user);
+        assert(userService.findByUserId(user.getUserId()).getUserId() == 1);
     }
 
 }

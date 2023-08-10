@@ -65,4 +65,23 @@ public class UserService {
         }
 
     }
+
+    public int deleteUser(int userId) {
+        if(userRepository.findByUserId(userId)==null){
+            throw new ResourceNotFoundException("User does not exists");
+        }
+        if(userCatalogRepository.findByUserId(userId).size()>0){
+            throw new ResourceAlreadyExistsException("User has books");
+        }
+
+        userRepository.deleteByUserId(userId);
+        return userId;
+    }
+
+    public UserProfile findByUserId(int userId) {
+        if(userRepository.findByUserId(userId)==null) {
+            throw new ResourceNotFoundException("User does not exists");
+        }
+        return userRepository.findByUserId(userId);
+    }
 }

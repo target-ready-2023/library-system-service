@@ -57,7 +57,6 @@ public class LibrarySystemService {
 
     }
 
-
     public String deleteBook(int bookId) {
         bookRepository.deleteById(bookId);
         return "Book Deleted Successfully";
