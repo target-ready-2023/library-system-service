@@ -41,12 +41,17 @@ public class UserServiceTest {
 
     @Test
     public void addUserCatalogTest(){
+
         UserCatalog user = new UserCatalog();
-        user.setId(1);
-        user.setUserId(1);
         user.setBookId(1);
+        user.setId(1);
+        user.setUserId(2);
+        UserProfile user1 = new UserProfile();
+        user1.setUserId(2);
+        user1.setUserName("Rohit");
+        when(userRepository.findByUserId(user.getUserId())).thenReturn(user1);
         when(userCatalogRepository.save(user)).thenReturn(user);
-        assert(userService.addUserCatalog(user).getId() == 1);
+        assert(userService.addUserCatalog(user).getUserId() == user1.getUserId());
     }
 
     @Test
