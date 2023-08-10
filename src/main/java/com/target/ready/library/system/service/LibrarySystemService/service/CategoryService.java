@@ -47,7 +47,7 @@ public class CategoryService {
     }
 
     public Category findByCategoryName(String categoryName) {
-         Category categor1=categoryRepository.findByCategoryName(categoryName);
+         Category categor1=categoryRepository.findByCategoryName(categoryName.toLowerCase());
 
          if(categor1==null){
              throw new ResourceNotFoundException("Category not found with given category name");

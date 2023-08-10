@@ -4,16 +4,19 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.BookC
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("library/v2")
@@ -27,7 +30,7 @@ public class CategoryController {
     }
 
     @PostMapping("inventory/category")
-    public ResponseEntity<?> addCategory(@RequestBody Category category){
+    public ResponseEntity<?> addCategory( @RequestBody Category category){
             return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
 
     }
@@ -44,7 +47,7 @@ public class CategoryController {
 //    }
 
     @PostMapping("inventory/book/category")
-    public ResponseEntity<BookCategory> addBookCategory(@RequestBody BookCategory bookCategory){
+    public ResponseEntity<BookCategory> addBookCategory( @RequestBody BookCategory bookCategory){
         return new ResponseEntity<>(categoryService.addBookCategory(bookCategory), HttpStatus.CREATED);
     }
 

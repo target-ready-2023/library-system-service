@@ -76,4 +76,33 @@ public class UserControllerTest {
         assertEquals(userId, responseBody);
     }
 
+    @Test
+    public void deleteUserTest(){
+        int userId = 3;
+        when(userService.deleteUser(userId)).thenReturn(userId);
+
+        ResponseEntity<Integer> response = userController.deleteUser(userId);
+
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        Integer responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(userId, responseBody);
+    }
+
+    @Test
+    public void findByUserIdTest(){
+        int userId = 3;
+        UserProfile user = new UserProfile();
+        user.setUserId(userId);
+        user.setUserName("Rohit");
+        when(userService.findByUserId(userId)).thenReturn(user);
+
+        ResponseEntity<UserProfile> response = userController.findByUserId(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        UserProfile responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(user, responseBody);
+    }
+
 }
