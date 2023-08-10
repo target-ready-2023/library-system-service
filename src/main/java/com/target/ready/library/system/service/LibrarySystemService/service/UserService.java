@@ -22,30 +22,30 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserCatalogRepository userCatalogRepository, UserRepository userRepository){
+    public UserService(UserCatalogRepository userCatalogRepository, UserRepository userRepository) {
         this.userCatalogRepository = userCatalogRepository;
         this.userRepository = userRepository;
     }
 
-    public List<Integer> findBooksByUserId(int userId){
-        List<UserCatalog> userCatalogs=userCatalogRepository.findByUserId(userId);
-        List<Integer> bookIds=new ArrayList<>();
-        for(UserCatalog eachUserCatalog:userCatalogs){
-            int bookId= eachUserCatalog.getBookId();
+    public List<Integer> findBooksByUserId(int userId) {
+        List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
+        List<Integer> bookIds = new ArrayList<>();
+        for (UserCatalog eachUserCatalog : userCatalogs) {
+            int bookId = eachUserCatalog.getBookId();
             bookIds.add(bookId);
         }
         return bookIds;
     }
 
-    public Integer deleteBookByUserId(int userId, int bookId){
-        return userCatalogRepository.deleteByBookIdAndUserId(bookId,userId);
+    public Integer deleteBookByUserId(int userId, int bookId) {
+        return userCatalogRepository.deleteByBookIdAndUserId(bookId, userId);
 
     }
 
-    public UserCatalog addUserCatalog(UserCatalog userCatalog){
+    public UserCatalog addUserCatalog(UserCatalog userCatalog) {
         try {
-            UserProfile userProfile=userRepository.findByUserId(userCatalog.getUserId());
-            if(userProfile==null){
+            UserProfile userProfile = userRepository.findByUserId(userCatalog.getUserId());
+            if (userProfile == null) {
                 throw new ResourceNotFoundException("Student does not exists");
             }
             return userCatalogRepository.save(userCatalog);
@@ -55,22 +55,22 @@ public class UserService {
 
     }
 
-    public UserProfile addUser(UserProfile userProfile){
-       UserProfile userProfile1=userRepository.findById(userProfile.getUserId()).orElse(null);
-        if (userProfile1==null) {
+    public UserProfile addUser(UserProfile userProfile) {
+        UserProfile userProfile1 = userRepository.findById(userProfile.getUserId()).orElse(null);
+        if (userProfile1 == null) {
             return userRepository.save(userProfile);
-        }
-        else{
+        } else {
             throw new ResourceAlreadyExistsException("User already Exists");
         }
 
     }
 
+
     public int deleteUser(int userId) {
-        if(userRepository.findByUserId(userId)==null){
+        if (userRepository.findByUserId(userId) == null) {
             throw new ResourceNotFoundException("User does not exists");
         }
-        if(userCatalogRepository.findByUserId(userId).size()>0){
+        if (userCatalogRepository.findByUserId(userId).size() > 0) {
             throw new ResourceAlreadyExistsException("User has books");
         }
 
@@ -79,9 +79,17 @@ public class UserService {
     }
 
     public UserProfile findByUserId(int userId) {
-        if(userRepository.findByUserId(userId)==null) {
+        if (userRepository.findByUserId(userId) == null) {
             throw new ResourceNotFoundException("User does not exists");
         }
         return userRepository.findByUserId(userId);
     }
-}
+        public List<UserProfile> getAllUsers () {
+            List<UserProfile> users = userRepository.findAll();
+            if (users.isEmpty()) {
+                throw new ResourceNotFoundException("Currently no users!");
+            }
+            return users;
+        }
+    }
+

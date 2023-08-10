@@ -59,7 +59,11 @@ public class UserController {
 
 
     @GetMapping("user/{userId}")
-    public ResponseEntity<UserProfile> findByUserId(@PathVariable int userId){
+    public ResponseEntity<UserProfile> findByUserId(@PathVariable int userId) {
         return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
+    }
+    @GetMapping("users")
+    public ResponseEntity<?> getAllUsers(){
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 }

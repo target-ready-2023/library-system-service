@@ -123,17 +123,17 @@ public class LibrarySystemServiceTest {
         List<BookCategory> bookCategories = new ArrayList<BookCategory>();
 
         bookCategories.add(new BookCategory(1,1,"fiction"));
-        bookCategories.add(new BookCategory(2,2,"Sci-fi"));
+        bookCategories.add(new BookCategory(2,2,"sci-fi"));
 
         BookCategory bookCategory2 = new BookCategory();
-        bookCategory2.setCategoryName("Sci-fi");
+        bookCategory2.setCategoryName("sci-fi");
         bookCategory2.setBookId(2);
         bookCategory2.setId(2);
         bookCategories.add(bookCategory2);
 
         Pageable pageable = PageRequest.of(0,5);
         Page<BookCategory> page = new PageImpl<>(bookCategories, pageable, bookCategories.size());
-        when(bookCategoryRepository.findByCategoryName("Sci-fi",pageable)).thenReturn(page);
+        when(bookCategoryRepository.findByCategoryName("sci-fi",pageable)).thenReturn(page);
         List<Book> response = librarySystemService.findBookByCategoryName(bookCategory2.getCategoryName(),0,5);
         assertEquals( page.getTotalElements(),response.size());
     }

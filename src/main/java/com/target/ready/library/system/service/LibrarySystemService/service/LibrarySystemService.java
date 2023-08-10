@@ -69,7 +69,7 @@ public class LibrarySystemService {
     public List<Book> findBookByCategoryName(String categoryName){
         List<BookCategory> bookCategory;
         List<Book> bookDetails = new ArrayList<>();
-        bookCategory = bookCategoryRepository.findByCategoryName(categoryName);
+        bookCategory = bookCategoryRepository.findByCategoryName(categoryName.toLowerCase());
         for(BookCategory bookCategory1 : bookCategory){
             int b1 = bookCategory1.getBookId();
             Book book = findByBookId(b1);
@@ -79,14 +79,14 @@ public class LibrarySystemService {
     }
 
     public long getTotalBookCategoryCount(String categoryName) {
-        return bookCategoryRepository.countBooksByCategoryName(categoryName);
+        return bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase());
     }
 
     public List<Book> findBookByCategoryName(String categoryName , int pageNumber,int pageSize){
         Page<BookCategory> bookCategory;
         List<Book> bookDetails = new ArrayList<>();
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        bookCategory = bookCategoryRepository.findByCategoryName(categoryName, pageable);
+        bookCategory = bookCategoryRepository.findByCategoryName(categoryName.toLowerCase(), pageable);
         List<BookCategory> books = bookCategory.toList();
         for(BookCategory bookCategory1 : books){
             int b1 = bookCategory1.getBookId();
