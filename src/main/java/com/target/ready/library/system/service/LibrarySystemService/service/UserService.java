@@ -65,4 +65,12 @@ public class UserService {
         }
 
     }
+
+    public List<UserProfile> getAllUsers(){
+        List<UserProfile> users = userRepository.findAll();
+        if(users.isEmpty()){
+            throw new ResourceNotFoundException("Currently no users!");
+        }
+        return users;
+    }
 }

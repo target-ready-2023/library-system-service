@@ -48,4 +48,9 @@ public class UserController {
 
         return new ResponseEntity<>(userService.addUser(userProfile), HttpStatus.CREATED);
     }
+
+    @GetMapping("users")
+    public ResponseEntity<?> getAllUsers(){
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    }
 }
