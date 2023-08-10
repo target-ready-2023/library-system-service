@@ -68,23 +68,23 @@ public class CategoryServiceTest {
         BookCategory bookCategory1 = new BookCategory();
         bookCategory1.setId(1);
         bookCategory1.setBookId(2);
-        bookCategory1.setCategoryName("Thriller");
+        bookCategory1.setCategoryName("thriller");
         bookCategories.add(bookCategory1);
 
         Category category1 = new Category();
         category1.setCategoryId(1);
-        category1.setCategoryName("Thriller");
+        category1.setCategoryName("thriller");
         categories.add(category1);
 
         BookCategory bookCategory2= new BookCategory();
         bookCategory2.setId(2);
         bookCategory2.setBookId(3);
-        bookCategory2.setCategoryName("Suspense");
+        bookCategory2.setCategoryName("suspense");
         bookCategories.add(bookCategory2);
 
         Category category2 = new Category();
         category2.setCategoryId(2);
-        category2.setCategoryName("Suspense");
+        category2.setCategoryName("suspense");
         categories.add(category2);
 
         bookCategories1.add(bookCategory2);
@@ -94,12 +94,12 @@ public class CategoryServiceTest {
             return bookCategories;
         }).when(bookCategoryRepository).deleteBookCategoriesByBookId(2);
 
-        when(bookCategoryRepository.findByCategoryName("Suspense")).thenReturn(new ArrayList<>());
+        when(bookCategoryRepository.findByCategoryName("suspense")).thenReturn(new ArrayList<>());
 
         doAnswer((i) -> {
-            categories.removeIf(category -> category.getCategoryName() == "Suspense");
+            categories.removeIf(category -> category.getCategoryName() == "suspense");
             return null;
-        }).when(categoryRepository).deleteByCategoryName("Suspense");
+        }).when(categoryRepository).deleteByCategoryName("suspense");
 
         categoryService.deleteCategories(2);
 
@@ -110,7 +110,7 @@ public class CategoryServiceTest {
     @Test
     public void addCategoryTest(){
         Category category=new Category();
-        category.setCategoryName("Fiction");
+        category.setCategoryName("fiction");
         when(categoryRepository.save(category)).thenAnswer(invocation -> {
             Category category1=invocation.getArgument(0);
             category1.setCategoryId(1);
@@ -118,7 +118,7 @@ public class CategoryServiceTest {
         });
         Category savedCategory=categoryService.addCategory(category);
         assertEquals(1,savedCategory.getCategoryId());
-        assertEquals("Fiction",savedCategory.getCategoryName());
+        assertEquals("fiction",savedCategory.getCategoryName());
     }
 
 
@@ -127,10 +127,10 @@ public class CategoryServiceTest {
     public void findByCategoryNameTest(){
         Category category=new Category();
         category.setCategoryId(1);
-        category.setCategoryName("Fiction");
+        category.setCategoryName("fiction");
         when(categoryRepository.findByCategoryName(category.getCategoryName())).thenReturn(category);
         Category savedCategory=categoryService.findByCategoryName(category.getCategoryName());
-        assertEquals("Fiction",savedCategory.getCategoryName());
+        assertEquals("fiction",savedCategory.getCategoryName());
     }
 
     @Test
