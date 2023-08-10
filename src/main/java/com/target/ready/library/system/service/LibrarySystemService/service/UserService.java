@@ -68,7 +68,7 @@ public class UserService {
 
     public int deleteUser(int userId) {
         if (userRepository.findByUserId(userId) == null) {
-            throw new ResourceNotFoundException("User does not exists");
+            throw new ResourceNotFoundException("User does not exist");
         }
         if (userCatalogRepository.findByUserId(userId).size() > 0) {
             throw new ResourceAlreadyExistsException("User has books");
@@ -80,7 +80,7 @@ public class UserService {
 
     public UserProfile findByUserId(int userId) {
         if (userRepository.findByUserId(userId) == null) {
-            throw new ResourceNotFoundException("User does not exists");
+            throw new ResourceNotFoundException("User does not exist");
         }
         return userRepository.findByUserId(userId);
     }
