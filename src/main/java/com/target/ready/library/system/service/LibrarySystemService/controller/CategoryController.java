@@ -5,11 +5,13 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Categ
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -59,9 +61,12 @@ public class CategoryController {
             category=categoryService.deleteCategories(id);
             return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
         }
-        catch (Exception e)
-        {
-            return new ResponseEntity<>("An error occurred while deleting the category", HttpStatus.INTERNAL_SERVER_ERROR);
+        catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+        } catch (DataAccessException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        } catch (RuntimeException ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Failed to Delete Book");
         }
     }
     @GetMapping("/categories/{page_number}/{page_size}")

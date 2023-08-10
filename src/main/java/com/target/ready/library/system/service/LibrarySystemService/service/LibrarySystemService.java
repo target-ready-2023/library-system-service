@@ -8,6 +8,7 @@ import com.target.ready.library.system.service.LibrarySystemService.exceptions.R
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -54,14 +55,12 @@ public class LibrarySystemService {
     }
 
 
-    public String deleteBook(int bookId) {
+    public String deleteBook(int bookId) throws ResourceNotFoundException, DataAccessException {
         try {
             bookRepository.deleteById(bookId);
             return "Book Deleted Successfully";
-        } catch (EmptyResultDataAccessException e) {
-            return "Book with the specified ID not found";
-        } catch (Exception e) {
-            return "An error occurred while deleting the book";
+        } catch(Exception ex){
+            throw ex;
         }
     }
 

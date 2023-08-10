@@ -9,6 +9,7 @@ import com.target.ready.library.system.service.LibrarySystemService.repository.B
 import com.target.ready.library.system.service.LibrarySystemService.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,7 +74,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public String deleteCategories(int id) throws InterruptedException {
+    public String deleteCategories(int id) throws ResourceNotFoundException, DataAccessException {
         lock.lock();
         try{
             List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(id);
