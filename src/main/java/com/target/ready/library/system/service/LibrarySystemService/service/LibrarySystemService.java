@@ -59,7 +59,7 @@ public class LibrarySystemService {
         try {
             bookRepository.deleteById(bookId);
             return "Book Deleted Successfully";
-        } catch(Exception ex){
+        } catch(DataAccessException ex){
             throw ex;
         }
     }
