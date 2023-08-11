@@ -73,12 +73,6 @@ public class LibrarySystemController {
         return new ResponseEntity<>(librarySystemService.findByBookId(bookId), HttpStatus.OK);
     }
 
-
-//    @GetMapping("book/category/{categoryName}")
-//    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName){
-//        return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName), HttpStatus.OK);
-//    }
-
     @GetMapping("book/category/{categoryName}/{pageNumber}/{pageSize}")
     public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName, @PathVariable int pageNumber, @PathVariable int pageSize){
         return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName,pageNumber,pageSize), HttpStatus.OK);
@@ -104,8 +98,12 @@ public class LibrarySystemController {
     }
 
     @PutMapping("inventory/book/update/{id}")
-    public ResponseEntity<Book> updateBookDetails(@PathVariable("id") int id, @RequestBody Book book ){
-        return new ResponseEntity<>(librarySystemService.updateBookDetails(id,book), HttpStatus.OK);
+    public ResponseEntity<?> updateBookDetails(@PathVariable("id") int id, @RequestBody @Valid Book book) {
+        try {
+            return new ResponseEntity<>(librarySystemService.updateBookDetails(id, book), HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceAlreadyExistsException("A Book already exists with same name and author name");
+        }
     }
 
     @GetMapping("inventory/book/{bookId}")

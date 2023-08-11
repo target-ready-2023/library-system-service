@@ -3,6 +3,7 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {LibraryControllerTest.class})
@@ -202,6 +205,41 @@ public class LibraryControllerTest {
         ResponseEntity<String> response = librarySystemController.deleteBook(book.getBookId());
         assertEquals(response.getStatusCode(),HttpStatus.ACCEPTED);
         assertEquals(response.getBody(),"Book Deleted Successfully");
+    }
+    @Test
+    void updateBookDetailsSuccessfulTest() {
+        int bookId = 1;
+        Book bookToUpdate = new Book();
+        bookToUpdate.setBookName("A leader who had no title");
+        bookToUpdate.setBookDescription("A motivational book for entrepreneurs");
+        bookToUpdate.setAuthorName("Robin Sharma");
+        bookToUpdate.setPublicationYear(2011);
+
+        Book updatedBook = new Book();
+        updatedBook.setBookId(bookId);
+        updatedBook.setBookName("The 5 am club");
+        updatedBook.setBookDescription("A self development book");
+        updatedBook.setAuthorName("Robin Sharma");
+        updatedBook.setPublicationYear(2013);
+
+        when(librarySystemService.updateBookDetails(eq(bookId), eq(bookToUpdate))).thenReturn(updatedBook);
+        ResponseEntity<?> response = librarySystemController.updateBookDetails(bookId, bookToUpdate);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedBook, response.getBody());
+    }
+    @Test
+    void updateBookDetailsConflictTest() {
+        int bookId = 1;
+        Book bookToUpdate = new Book();
+        bookToUpdate.setBookName("The 5 am club");
+        bookToUpdate.setBookDescription("A self development book");
+        bookToUpdate.setAuthorName("Robin Sharma");
+        bookToUpdate.setPublicationYear(2013);
+
+        when(librarySystemService.updateBookDetails(eq(bookId), eq(bookToUpdate)))
+                .thenThrow(new ResourceAlreadyExistsException("A Book already exists with same name and author name"));
+        assertThrows(ResourceAlreadyExistsException.class,
+                () -> librarySystemController.updateBookDetails(bookId, bookToUpdate));
     }
 
 }
