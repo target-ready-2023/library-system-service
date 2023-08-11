@@ -87,6 +87,8 @@ public class LibrarySystemService {
         List<Book> bookDetails = new ArrayList<>();
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         bookCategory = bookCategoryRepository.findByCategoryName(categoryName.toLowerCase(), pageable);
+        if (bookCategory.isEmpty())
+            throw new ResourceNotFoundException("category does not exist!");
         List<BookCategory> books = bookCategory.toList();
         for(BookCategory bookCategory1 : books){
             int b1 = bookCategory1.getBookId();
