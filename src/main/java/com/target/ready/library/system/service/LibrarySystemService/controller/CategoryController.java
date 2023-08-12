@@ -6,12 +6,14 @@ import com.target.ready.library.system.service.LibrarySystemService.exceptions.R
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -60,12 +62,11 @@ public class CategoryController {
        String category="";
         try {
             category=categoryService.deleteCategories(id);
+            return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
         }
-        catch (Exception e)
-        {
-            System.out.println(e);
+        catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
     }
     @GetMapping("/categories/{page_number}/{page_size}")
     public ResponseEntity<?> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
