@@ -1,6 +1,7 @@
 package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.LibrarySystemService;
@@ -8,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +59,12 @@ public class LibrarySystemController {
 
     @DeleteMapping("book/{bookId}")
     public ResponseEntity<String> deleteBook(@PathVariable int bookId) {
-        return new ResponseEntity<>(librarySystemService.deleteBook(bookId), HttpStatus.ACCEPTED);
+        try {
+            String deletionResult = librarySystemService.deleteBook(bookId);
+            return new ResponseEntity<>(deletionResult, HttpStatus.ACCEPTED);
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Failed to delete Book");
+        }
     }
 
     @GetMapping("book/{bookId}")

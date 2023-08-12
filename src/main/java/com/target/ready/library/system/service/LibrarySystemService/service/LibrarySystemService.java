@@ -8,16 +8,13 @@ import com.target.ready.library.system.service.LibrarySystemService.exceptions.R
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +54,14 @@ public class LibrarySystemService {
 
     }
 
-    public String deleteBook(int bookId) {
-        bookRepository.deleteById(bookId);
-        return "Book Deleted Successfully";
+
+    public String deleteBook(int bookId) throws ResourceNotFoundException {
+        try {
+            bookRepository.deleteById(bookId);
+            return "Book Deleted Successfully";
+        } catch(ResourceNotFoundException ex){
+            throw ex;
+        }
     }
 
     public Book findByBookId(int bookId) {
