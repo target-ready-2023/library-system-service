@@ -62,8 +62,8 @@ public class LibrarySystemController {
         try {
             String deletionResult = librarySystemService.deleteBook(bookId);
             return new ResponseEntity<>(deletionResult, HttpStatus.ACCEPTED);
-        } catch (RuntimeException ex){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Failed to Delete Book");
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Failed to delete Book");
         }
     }
 

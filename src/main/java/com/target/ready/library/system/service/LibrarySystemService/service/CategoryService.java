@@ -74,7 +74,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public String deleteCategories(int id) throws ResourceNotFoundException, DataAccessException {
+    public String deleteCategories(int id) throws ResourceNotFoundException {
         lock.lock();
         try{
             List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(id);

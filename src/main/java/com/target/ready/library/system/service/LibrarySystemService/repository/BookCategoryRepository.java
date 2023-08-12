@@ -17,9 +17,9 @@ public interface BookCategoryRepository extends JpaRepository<BookCategory,Integ
 //    @Query("SELECT id FROM BookCategory b WHERE b.categoryName=:categoryName")
 //    Integer findBookCategoriesByCategoryName(String categoryName);
 
-    List<BookCategory> deleteBookCategoriesByBookId(int bookId) throws ResourceNotFoundException, DataAccessException;
+    List<BookCategory> deleteBookCategoriesByBookId(int bookId) throws ResourceNotFoundException;
     List<BookCategory> findAllCategoriesByBookId(int bookId);
-    List<BookCategory> findByCategoryName(String categoryName) throws ResourceNotFoundException, DataAccessException;
+    List<BookCategory> findByCategoryName(String categoryName) throws ResourceNotFoundException;
     Page<BookCategory> findByCategoryName(String categoryName, Pageable pageable);
     long countBooksByCategoryName(String categoryName);
 

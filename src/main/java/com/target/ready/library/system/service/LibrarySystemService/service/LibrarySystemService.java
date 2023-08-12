@@ -55,11 +55,11 @@ public class LibrarySystemService {
     }
 
 
-    public String deleteBook(int bookId) throws ResourceNotFoundException, DataAccessException {
+    public String deleteBook(int bookId) throws ResourceNotFoundException {
         try {
             bookRepository.deleteById(bookId);
             return "Book Deleted Successfully";
-        } catch(DataAccessException ex){
+        } catch(ResourceNotFoundException ex){
             throw ex;
         }
     }

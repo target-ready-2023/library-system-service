@@ -66,10 +66,6 @@ public class CategoryController {
         }
         catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
-        } catch (DataAccessException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-        } catch (RuntimeException ex){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Failed to Delete Book");
         }
     }
     @GetMapping("/categories/{page_number}/{page_size}")
