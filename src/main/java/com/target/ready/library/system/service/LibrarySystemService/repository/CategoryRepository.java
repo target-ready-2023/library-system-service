@@ -12,5 +12,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category findByCategoryName(String categoryName) throws ResourceNotFoundException;
 
-    void deleteByCategoryName(String categoryName) throws ResourceNotFoundException, DataAccessException;
+    void deleteByCategoryName(String categoryName) throws ResourceNotFoundException;
 }
