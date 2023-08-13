@@ -32,4 +32,6 @@ public class Inventory {
     @JsonAlias("noOfBooksLeft")
     private int noOfBooksLeft;
 
+
 }
+
