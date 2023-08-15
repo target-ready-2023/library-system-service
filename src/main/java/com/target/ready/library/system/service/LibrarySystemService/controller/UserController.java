@@ -28,7 +28,7 @@ public class UserController {
 
 
     @GetMapping("user/books/{userId}")
-    public ResponseEntity<List<Integer>> findBooksByUserId(@PathVariable int userId){
+    public ResponseEntity<List<UserCatalog>> findBooksByUserId(@PathVariable int userId){
         return new ResponseEntity<>(userService.findBooksByUserId(userId), HttpStatus.OK);
     }
 

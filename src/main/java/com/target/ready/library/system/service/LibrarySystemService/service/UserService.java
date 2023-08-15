@@ -27,14 +27,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<Integer> findBooksByUserId(int userId) {
+//    public List<Integer> findBooksByUserId(int userId) {
+//        List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
+//        List<Integer> bookIds = new ArrayList<>();
+//        for (UserCatalog eachUserCatalog : userCatalogs) {
+//            int bookId = eachUserCatalog.getBookId();
+//            bookIds.add(bookId);
+//        }
+//        return bookIds;
+//    }
+
+    public List<UserCatalog> findBooksByUserId(int userId) {
         List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
-        List<Integer> bookIds = new ArrayList<>();
-        for (UserCatalog eachUserCatalog : userCatalogs) {
-            int bookId = eachUserCatalog.getBookId();
-            bookIds.add(bookId);
-        }
-        return bookIds;
+        return userCatalogs;
     }
 
     public Integer deleteBookByUserId(int userId, int bookId) {
