@@ -13,5 +13,8 @@ public interface UserCatalogRepository extends JpaRepository<UserCatalog,Integer
     @Modifying
     @Query("DELETE FROM UserCatalog b WHERE b.bookId = :bookId AND b.userId = :userId")
     public Integer deleteByBookIdAndUserId(int bookId, int userId);
+
+
+    public UserCatalog findByBookIdAndUserId(int bookId, int userId);
     public List<UserCatalog> findByUserId(int userId);
 }

@@ -38,7 +38,7 @@ public class LibrarySystemController {
     }
 
     @GetMapping("books_directory/{page_number}/{page_size}")
-    public ResponseEntity<List<Book>> getAllBooks(@PathVariable int page_number, @PathVariable int page_size) {
+    public ResponseEntity<List<Book>> getAllBooks(@PathVariable int page_number, @PathVariable int page_size) throws ResourceNotFoundException{
         return new ResponseEntity<>(librarySystemService.getAllBooks(page_number,page_size),HttpStatus.OK);
     }
     @GetMapping("/books_directory/total_count")
@@ -52,67 +52,59 @@ public class LibrarySystemController {
     }
 
     @PostMapping("inventory/books")
-    public ResponseEntity<?> addBook(@Valid @RequestBody Book book) {
+    public ResponseEntity<?> addBook(@Valid @RequestBody Book book) throws ResourceAlreadyExistsException{
             Book addedBook = librarySystemService.addBook(book);
             return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 
     @DeleteMapping("book/{bookId}")
-    public ResponseEntity<String> deleteBook(@PathVariable int bookId) {
-        try {
+    public ResponseEntity<String> deleteBook(@PathVariable int bookId) throws ResourceNotFoundException {
+
             String deletionResult = librarySystemService.deleteBook(bookId);
             return new ResponseEntity<>(deletionResult, HttpStatus.ACCEPTED);
-        } catch (ResourceNotFoundException ex){
-            throw new ResourceNotFoundException("Failed to delete Book");
-        }
+
     }
 
     @GetMapping("book/{bookId}")
-    public ResponseEntity<Book> findByBookId(@PathVariable int bookId) {
+    public ResponseEntity<Book> findByBookId(@PathVariable int bookId) throws ResourceNotFoundException{
 
         return new ResponseEntity<>(librarySystemService.findByBookId(bookId), HttpStatus.OK);
     }
 
     @GetMapping("book/category/{categoryName}/{pageNumber}/{pageSize}")
-    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName, @PathVariable int pageNumber, @PathVariable int pageSize){
+    public ResponseEntity<List<Book>> findBookByCategoryName(@PathVariable String categoryName, @PathVariable int pageNumber, @PathVariable int pageSize) throws ResourceNotFoundException{
         return new ResponseEntity<>(librarySystemService.findBookByCategoryName(categoryName,pageNumber,pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/books/category/total_count/{categoryName}")
-    public ResponseEntity<Long> getTotalBookCategoryCount(@PathVariable String categoryName) {
-        try {
+    public ResponseEntity<Long> getTotalBookCategoryCount(@PathVariable String categoryName) throws ResourceNotFoundException{
+
             long totalCount = librarySystemService.getTotalBookCategoryCount(categoryName);
             return new ResponseEntity<>(totalCount, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(0L, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @GetMapping("books/{bookName}")
-    public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) {
-        try {
+    public ResponseEntity<List<Book>> findByBookName(@PathVariable String bookName) throws ResourceNotFoundException{
+
             return new ResponseEntity<>(librarySystemService.findByBookName(bookName), HttpStatus.OK);
-        }catch (ResourceNotFoundException e){
-            return  new ResponseEntity<>(Collections.emptyList(),HttpStatus.OK);
-        }
+
     }
 
     @PutMapping("inventory/book/update/{id}")
-    public ResponseEntity<?> updateBookDetails(@PathVariable("id") int id, @RequestBody @Valid Book book) {
-        try {
+    public ResponseEntity<?> updateBookDetails(@PathVariable("id") int id, @RequestBody @Valid Book book) throws ResourceAlreadyExistsException{
+
             return new ResponseEntity<>(librarySystemService.updateBookDetails(id, book), HttpStatus.OK);
-        } catch (DataIntegrityViolationException e) {
-            throw new ResourceAlreadyExistsException("A Book already exists with same name and author name");
-        }
+
     }
 
     @GetMapping("inventory/book/{bookId}")
-    public ResponseEntity<Inventory> getBookById(@PathVariable int bookId){
+    public ResponseEntity<Inventory> getBookById(@PathVariable int bookId) throws ResourceNotFoundException{
         return new ResponseEntity<>(librarySystemService.getBookById(bookId), HttpStatus.OK);
     }
 
     @PostMapping("inventory")
-    public ResponseEntity<Inventory> addInventory(@RequestBody Inventory inventory){
+    public ResponseEntity<Inventory> addInventory(@RequestBody Inventory inventory) throws ResourceAlreadyExistsException{
         return new ResponseEntity<>(librarySystemService.addInventory(inventory), HttpStatus.CREATED);
     }
 

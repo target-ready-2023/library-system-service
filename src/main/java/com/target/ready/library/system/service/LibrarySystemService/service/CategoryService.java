@@ -69,17 +69,18 @@ public class CategoryService {
     }
 
     public String deleteBookCategory(int id){
+        bookCategoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The id doesn't exist"));
         bookCategoryRepository.deleteById(id);
         return "Deleted";
     }
 
     @Transactional
-    public String deleteCategories(int id) throws ResourceNotFoundException {
-        lock.lock();
-        try{
-            List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(id);
+    public String deleteCategories(int bookId)  {
+
+           bookCategoryRepository.findAllCategoriesByBookId(bookId);
+            List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(bookId);
             bookCategoryRepository.flush();
-            Thread.sleep(3000);
+
             for (BookCategory bookCategory:bookCategories) {
                 String categoryName=bookCategory.getCategoryName();
                 List<BookCategory> bookCategories1=bookCategoryRepository.findByCategoryName(categoryName);
@@ -87,14 +88,10 @@ public class CategoryService {
                     categoryRepository.deleteByCategoryName(categoryName);
                 }
             }
-            Thread.sleep(2000);
-        }
-        catch(Exception e){
-            throw new RuntimeException("Failed to delete categories", e);
-        }
-        finally {
-            lock.unlock();
-        }
+
+
+
+
         return "Book category deleted";
     }
 
