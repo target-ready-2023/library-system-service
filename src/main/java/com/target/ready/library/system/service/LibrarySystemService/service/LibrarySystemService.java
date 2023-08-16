@@ -2,12 +2,15 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
+import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
+import com.target.ready.library.system.service.LibrarySystemService.repository.CategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.InventoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,11 +28,16 @@ public class LibrarySystemService {
     private final BookRepository bookRepository;
     private final InventoryRepository inventoryRepository;
     private final BookCategoryRepository bookCategoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    public LibrarySystemService(BookRepository bookRepository, InventoryRepository inventoryRepository, BookCategoryRepository bookCategoryRepository){
+    @Autowired
+    CategoryService categoryService;
+
+    public LibrarySystemService(BookRepository bookRepository, InventoryRepository inventoryRepository, BookCategoryRepository bookCategoryRepository, CategoryRepository categoryRepository){
         this.bookRepository = bookRepository;
         this.inventoryRepository = inventoryRepository;
         this.bookCategoryRepository = bookCategoryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<Book> getAllBooks(int page_number, int page_size) {
@@ -86,9 +94,10 @@ public class LibrarySystemService {
     }
 
     public long getTotalBookCategoryCount(String categoryName) {
+        categoryService.findByCategoryName(categoryName);
         long noOfBooks=bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase());
         if(noOfBooks==0){
-            throw new ResourceNotFoundException("Currently no books available!");
+            throw new ResourceNotFoundException("Currently no books available of this category!");
         }
         return noOfBooks;
     }
