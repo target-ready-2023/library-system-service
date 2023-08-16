@@ -57,7 +57,7 @@ public class LibrarySystemController {
             return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("book/{bookId}")
+    @DeleteMapping("books/{bookId}")
     public ResponseEntity<String> deleteBook(@PathVariable int bookId) throws ResourceNotFoundException {
 
             String deletionResult = librarySystemService.deleteBook(bookId);
