@@ -36,6 +36,7 @@ public class UserService {
 
     public List<UserCatalog> findBooksByUserId(int userId) {
         List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
+        System.out.println(userCatalogs);
         if(userCatalogs.isEmpty()){
             throw new ResourceNotFoundException("No book is issued to this user");
         }

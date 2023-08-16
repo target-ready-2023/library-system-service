@@ -77,8 +77,9 @@ public class CategoryService {
     @Transactional
     public String deleteCategories(int bookId)  {
 
-           bookCategoryRepository.findAllCategoriesByBookId(bookId);
+//           bookCategoryRepository.findAllCategoriesByBookId(bookId);
             List<BookCategory> bookCategories=bookCategoryRepository.deleteBookCategoriesByBookId(bookId);
+        System.out.println(bookCategories);
             bookCategoryRepository.flush();
 
             for (BookCategory bookCategory:bookCategories) {
