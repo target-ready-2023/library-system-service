@@ -1,9 +1,11 @@
 package com.target.ready.library.system.service.LibrarySystemService.service;
 
+import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserCatalog;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
+import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserCatalogRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +23,38 @@ public class UserService {
     private final UserCatalogRepository userCatalogRepository;
     private final UserRepository userRepository;
 
+    private final BookRepository bookRepository;
+
     @Autowired
-    public UserService(UserCatalogRepository userCatalogRepository, UserRepository userRepository) {
+    public UserService(UserCatalogRepository userCatalogRepository, UserRepository userRepository,BookRepository bookRepository) {
         this.userCatalogRepository = userCatalogRepository;
         this.userRepository = userRepository;
+        this.bookRepository=bookRepository;
     }
 
-    public List<Integer> findBooksByUserId(int userId) {
+
+
+    public List<UserCatalog> findBooksByUserId(int userId) {
         List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
-        List<Integer> bookIds = new ArrayList<>();
-        for (UserCatalog eachUserCatalog : userCatalogs) {
-            int bookId = eachUserCatalog.getBookId();
-            bookIds.add(bookId);
+        if(userCatalogs.isEmpty()){
+            throw new ResourceNotFoundException("No book is issued to this user");
         }
-        return bookIds;
+        return userCatalogs;
     }
 
     public Integer deleteBookByUserId(int userId, int bookId) {
+        UserProfile userProfile=userRepository.findByUserId(userId);
+        if(userProfile==null){
+            throw new ResourceNotFoundException("User doesn't exist");
+        }
+        Book book=bookRepository.findById(bookId).orElse(null);
+        if(book==null){
+            throw new ResourceNotFoundException("Book doesn't exist");
+        }
+        UserCatalog userCatalog=userCatalogRepository.findByBookIdAndUserId(bookId,userId);
+        if(userCatalog==null){
+            throw new ResourceNotFoundException("User doesn't have this book");
+        }
         return userCatalogRepository.deleteByBookIdAndUserId(bookId, userId);
 
     }
@@ -71,7 +88,7 @@ public class UserService {
             throw new ResourceNotFoundException("User does not exist");
         }
         if (userCatalogRepository.findByUserId(userId).size() > 0) {
-            throw new ResourceAlreadyExistsException("User has books");
+            throw new ResourceAlreadyExistsException("User has books so can't delete the user");
         }
 
         userRepository.deleteByUserId(userId);

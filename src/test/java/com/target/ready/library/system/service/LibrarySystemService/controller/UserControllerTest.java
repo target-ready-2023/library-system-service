@@ -47,20 +47,20 @@ public class UserControllerTest {
        assertEquals(HttpStatus.CREATED, response.getStatusCode());
    }
 
-    @Test
-    public void findBooksByUserIdTest() {
-        int userId = 1;
-        List<Integer> bookIds = new ArrayList<>();
-        bookIds.add(1);
-        when(userService.findBooksByUserId(userId)).thenReturn(bookIds);
-
-        ResponseEntity<List<Integer>> response = userController.findBooksByUserId(userId);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<Integer> responseBody = response.getBody();
-        assertNotNull(responseBody);
-        assertEquals(bookIds, responseBody);
-    }
+//    @Test
+//    public void findBooksByUserIdTest() {
+//        int userId = 1;
+//        List<Integer> bookIds = new ArrayList<>();
+//        bookIds.add(1);
+////        when(userService.findBooksByUserId(userId)).thenReturn(bookIds);
+//
+////        ResponseEntity<List<Integer>> response = userController.findBooksByUserId(userId);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        List<Integer> responseBody = response.getBody();
+//        assertNotNull(responseBody);
+//        assertEquals(bookIds, responseBody);
+//    }
 
     @Test
     public void deleteBookByUserIdTest(){

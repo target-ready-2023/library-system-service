@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import jakarta.validation.Valid;
@@ -30,46 +31,40 @@ public class CategoryController {
     }
 
     @PostMapping("inventory/category")
-    public ResponseEntity<?> addCategory( @RequestBody Category category){
+    public ResponseEntity<?> addCategory( @RequestBody Category category) throws ResourceAlreadyExistsException {
             return new ResponseEntity<>(categoryService.addCategory(category), HttpStatus.CREATED);
 
     }
 
     @GetMapping("/category/{categoryName}")
-    public ResponseEntity<?> findByCategoryName(@PathVariable String categoryName){
+    public ResponseEntity<?> findByCategoryName(@PathVariable String categoryName) throws ResourceNotFoundException{
             return new ResponseEntity<>(categoryService.findByCategoryName(categoryName), HttpStatus.OK);
 
     }
 
-//    @GetMapping("/category/book/{bookId}")
-//    public BookCategory findByBookId(@PathVariable int bookId){
-//        return categoryService.findByBookId(bookId);
-//    }
 
     @PostMapping("inventory/book/category")
-    public ResponseEntity<BookCategory> addBookCategory( @RequestBody BookCategory bookCategory){
+    public ResponseEntity<BookCategory> addBookCategory( @RequestBody BookCategory bookCategory)throws ResourceAlreadyExistsException{
         return new ResponseEntity<>(categoryService.addBookCategory(bookCategory), HttpStatus.CREATED);
     }
 
     @DeleteMapping("inventory/book/category/{id}")
-    public ResponseEntity<String> deleteBookCategory(@PathVariable int id){
+    public ResponseEntity<String> deleteBookCategory(@PathVariable int id) throws ResourceNotFoundException{
         return new ResponseEntity<>(categoryService.deleteBookCategory(id), HttpStatus.ACCEPTED);
     }
 
    @Transactional
     @DeleteMapping("inventory/delete/bookCategory/{id}")
-    public ResponseEntity<String> deleteCategories(@PathVariable int id){
+    public ResponseEntity<String> deleteCategories(@PathVariable int id) throws ResourceNotFoundException{
        String category="";
-        try {
+
             category=categoryService.deleteCategories(id);
             return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
-        }
-        catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
-        }
+
+
     }
     @GetMapping("/categories/{page_number}/{page_size}")
-    public ResponseEntity<?> findAllCategories(@PathVariable int page_number, @PathVariable int page_size){
+    public ResponseEntity<?> findAllCategories(@PathVariable int page_number, @PathVariable int page_size) throws ResourceNotFoundException{
 
             return new ResponseEntity<>(categoryService.findAllCategories(page_number, page_size), HttpStatus.OK);
 
@@ -77,7 +72,7 @@ public class CategoryController {
 
 
     @GetMapping("categories/{bookId}")
-    public ResponseEntity<?> findAllCategoriesByBookId(@PathVariable int bookId) {
+    public ResponseEntity<?> findAllCategoriesByBookId(@PathVariable int bookId) throws ResourceNotFoundException{
 
             return new ResponseEntity<>(categoryService.findAllCategoriesByBookId(bookId),HttpStatus.OK);
 
