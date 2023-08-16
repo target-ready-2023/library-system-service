@@ -54,11 +54,11 @@ public class CategoryController {
     }
 
    @Transactional
-    @DeleteMapping("inventory/delete/bookCategory/{id}")
-    public ResponseEntity<String> deleteCategories(@PathVariable int id) throws ResourceNotFoundException{
+    @DeleteMapping("inventory/delete/bookCategory/{bookId}")
+    public ResponseEntity<String> deleteCategories(@PathVariable int bookId) throws ResourceNotFoundException{
        String category="";
 
-            category=categoryService.deleteCategories(id);
+            category=categoryService.deleteCategories(bookId);
             return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
 
 
