@@ -2,6 +2,8 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserCatalog;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserCatalogRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserRepository;
 import com.target.ready.library.system.service.LibrarySystemService.service.UserService;
@@ -28,42 +30,42 @@ public class UserController {
 
 
     @GetMapping("user/books/{userId}")
-    public ResponseEntity<List<Integer>> findBooksByUserId(@PathVariable int userId){
+    public ResponseEntity<List<UserCatalog>> findBooksByUserId(@PathVariable int userId) throws ResourceNotFoundException {
         return new ResponseEntity<>(userService.findBooksByUserId(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("user/books/{userId}/{bookId}")
     @Transactional
-    public ResponseEntity<Integer> deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId){
+    public ResponseEntity<Integer> deleteBookByUserId(@PathVariable int userId, @PathVariable int bookId) throws ResourceNotFoundException{
          return new ResponseEntity<>(userService.deleteBookByUserId(userId, bookId), HttpStatus.OK);
     }
 
     @PostMapping("user/catalog")
-    public ResponseEntity<UserCatalog> addUserCatalog(@RequestBody UserCatalog userCatalog){
+    public ResponseEntity<UserCatalog> addUserCatalog(@RequestBody UserCatalog userCatalog) throws ResourceNotFoundException,ResourceAlreadyExistsException{
 
         return new ResponseEntity<>(userService.addUserCatalog(userCatalog), HttpStatus.CREATED);
     }
 
     @PostMapping("user")
-    public ResponseEntity<UserProfile> addUser(@RequestBody UserProfile userProfile){
+    public ResponseEntity<UserProfile> addUser(@RequestBody UserProfile userProfile) throws ResourceAlreadyExistsException {
 
         return new ResponseEntity<>(userService.addUser(userProfile), HttpStatus.CREATED);
     }
 
     @DeleteMapping("delete/user/{userId}")
     @Transactional
-    public ResponseEntity<Integer> deleteUser(@PathVariable int userId){
+    public ResponseEntity<Integer> deleteUser(@PathVariable int userId)throws ResourceNotFoundException,ResourceAlreadyExistsException{
         userService.deleteUser(userId);
         return new ResponseEntity<>(userId, HttpStatus.ACCEPTED);
     }
 
 
     @GetMapping("user/{userId}")
-    public ResponseEntity<UserProfile> findByUserId(@PathVariable int userId) {
+    public ResponseEntity<UserProfile> findByUserId(@PathVariable int userId) throws ResourceNotFoundException{
         return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
     }
     @GetMapping("users")
-    public ResponseEntity<?> getAllUsers(){
+    public ResponseEntity<?> getAllUsers() throws ResourceNotFoundException{
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 }

@@ -35,6 +35,9 @@ public class LibrarySystemService {
     public List<Book> getAllBooks(int page_number, int page_size) {
         Pageable pageable = PageRequest.of(page_number,page_size);
         Page<Book> findBooks = bookRepository.findAll(pageable);
+        if(findBooks.isEmpty()){
+            throw new ResourceNotFoundException("Currently no books available");
+        }
         List<Book> books =  findBooks.toList();
         return books;
     }
@@ -55,23 +58,25 @@ public class LibrarySystemService {
     }
 
 
-    public String deleteBook(int bookId) throws ResourceNotFoundException {
-        try {
+    public String deleteBook(int bookId) {
+           bookRepository.findById(bookId).orElseThrow(()->new ResourceNotFoundException("Book doesn't exist"));
             bookRepository.deleteById(bookId);
             return "Book Deleted Successfully";
-        } catch(ResourceNotFoundException ex){
-            throw ex;
-        }
+
+
     }
 
     public Book findByBookId(int bookId) {
-        return bookRepository.findById(bookId).orElse(null);
+        return bookRepository.findById(bookId).orElseThrow(()->new ResourceNotFoundException("Book doesn't exists"));
     }
 
     public List<Book> findBookByCategoryName(String categoryName){
         List<BookCategory> bookCategory;
         List<Book> bookDetails = new ArrayList<>();
         bookCategory = bookCategoryRepository.findByCategoryName(categoryName.toLowerCase());
+        if(bookCategory.isEmpty()){
+            throw new ResourceNotFoundException("No books are available for the given category!");
+        }
         for(BookCategory bookCategory1 : bookCategory){
             int b1 = bookCategory1.getBookId();
             Book book = findByBookId(b1);
@@ -81,7 +86,11 @@ public class LibrarySystemService {
     }
 
     public long getTotalBookCategoryCount(String categoryName) {
-        return bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase());
+        long noOfBooks=bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase());
+        if(noOfBooks==0){
+            throw new ResourceNotFoundException("Currently no books available!");
+        }
+        return noOfBooks;
     }
 
     public List<Book> findBookByCategoryName(String categoryName , int pageNumber,int pageSize){
@@ -90,7 +99,7 @@ public class LibrarySystemService {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         bookCategory = bookCategoryRepository.findByCategoryName(categoryName.toLowerCase(), pageable);
         if (bookCategory.isEmpty())
-            throw new ResourceNotFoundException("category does not exist!");
+            throw new ResourceNotFoundException("No books are available for the given category!");
         List<BookCategory> books = bookCategory.toList();
         for(BookCategory bookCategory1 : books){
             int b1 = bookCategory1.getBookId();
@@ -103,18 +112,24 @@ public class LibrarySystemService {
 
     public List<Book> findByBookName(String bookName) {
         List<Book> books= bookRepository.findByBookName(bookName);
-
+        if(books.isEmpty()){
+            throw new ResourceNotFoundException("The book with this name doesn't exist");
+        }
         return books;
     }
 
-    public Book updateBookDetails(int id, Book book ) throws DataIntegrityViolationException{
+    public Book updateBookDetails(int id, Book book ) {
         Book previousBook = bookRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException("Book with bookID: "+ id + " not found in database"));
         previousBook.setBookName(book.getBookName());
         previousBook.setBookDescription(book.getBookDescription());
         previousBook.setAuthorName(book.getAuthorName());
         previousBook.setPublicationYear(book.getPublicationYear());
-        return bookRepository.save(previousBook);
+        try{
+         return bookRepository.save(previousBook);}
+        catch (DataIntegrityViolationException ex){
+            throw new ResourceAlreadyExistsException("Book with same name and same author name already exists!");
+        }
     }
 
     public Inventory getBookById(int bookId){
