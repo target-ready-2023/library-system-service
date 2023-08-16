@@ -30,6 +30,9 @@ public class BookCategory {
     @JsonAlias("categoryName")
     private String categoryName;
 
+    public BookCategory(int id, int bookId) {
+    }
+
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName.toLowerCase();
     }
