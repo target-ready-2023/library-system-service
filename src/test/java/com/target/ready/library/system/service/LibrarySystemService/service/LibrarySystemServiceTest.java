@@ -59,7 +59,7 @@ public class LibrarySystemServiceTest {
     CategoryService categoryService;
 
     @Test
-    public void findByBookIdTest(){
+    public void findByBookIdTest() {
         Book book = new Book();
         book.setBookId(1);
         book.setBookName("The Shining");
@@ -68,46 +68,49 @@ public class LibrarySystemServiceTest {
         book.setPublicationYear(2023);
 
         when(bookRepository.findById(1)).thenReturn(Optional.of(book));
-        Book response=librarySystemService.findByBookId(1);
-        assert(response.getBookId()==1);
+        Book response = librarySystemService.findByBookId(1);
+        assert (response.getBookId() == 1);
     }
+
     @Test
-    public void getAllBooksTest(){
+    public void getAllBooksTest() {
         List<Book> records = new ArrayList<Book>();
         records.add(new Book(1,
                 "Five Point someone",
                 "Semi-autobiographical"
-                ,"Chetan Bhagat",2004));
+                , "Chetan Bhagat", 2004));
         records.add(new Book(2,
                 "The Silent Patient",
-                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+                "The dangers of unresolved or improperly treated mental illness", "Alex Michaelides", 2019)
         );
 
-        Pageable pageable = PageRequest.of(0,5);
+        Pageable pageable = PageRequest.of(0, 5);
         Page<Book> page = new PageImpl<>(records, pageable, records.size());
         when(bookRepository.findAll(pageable)).thenReturn(page);
-        List<Book> books =librarySystemService.getAllBooks(0,5);
+        List<Book> books = librarySystemService.getAllBooks(0, 5);
         assertEquals(page.getTotalElements(), books.size());
 
     }
+
     @Test
     public void getTotalBookCountTest() {
         List<Book> records = new ArrayList<Book>();
         records.add(new Book(1,
                 "Five Point someone",
                 "Semi-autobiographical"
-                ,"Chetan Bhagat",2004));
+                , "Chetan Bhagat", 2004));
         records.add(new Book(2,
                 "The Silent Patient",
-                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
+                "The dangers of unresolved or improperly treated mental illness", "Alex Michaelides", 2019)
         );
-        long repoCount=0;
+        long repoCount = 0;
         when(bookRepository.count()).thenReturn(repoCount);
-        long serviceCount=librarySystemService.getTotalBookCount();
-        assertEquals(repoCount,serviceCount);
+        long serviceCount = librarySystemService.getTotalBookCount();
+        assertEquals(repoCount, serviceCount);
     }
+
     @Test
-    public void getBookByIdTest(){
+    public void getBookByIdTest() {
         Inventory inventory = new Inventory();
         inventory.setInvBookId(1);
         inventory.setNoOfBooksLeft(2);
@@ -115,11 +118,11 @@ public class LibrarySystemServiceTest {
 
         when(inventoryRepository.findById(1)).thenReturn(Optional.of(inventory));
         Inventory response = librarySystemService.getBookById(1);
-        assert(response.getInvBookId()==1);
+        assert (response.getInvBookId() == 1);
     }
 
     @Test
-    public void addInventoryTest(){
+    public void addInventoryTest() {
         Inventory inventory1 = new Inventory();
         inventory1.setInvBookId(1);
         inventory1.setNoOfBooksLeft(2);
@@ -145,65 +148,22 @@ public class LibrarySystemServiceTest {
         verify(inventoryRepository).save(mockInventory);
     }
 
-    //@Test
-    //public void findBookByCategoryNameForPagenationTest() {
-//
-    //    List<BookCategory> bookCategories = new ArrayList<BookCategory>();
-//
-    //    bookCategories.add(new BookCategory(1,1,"fiction"));
-    //    bookCategories.add(new BookCategory(2,2,"sci-fi"));
-//
-    //    BookCategory bookCategory2 = new BookCategory();
-    //    bookCategory2.setCategoryName("sci-fi");
-    //    bookCategory2.setBookId(2);
-    //    bookCategory2.setId(2);
-    //    bookCategories.add(bookCategory2);
-//
-    //    Pageable pageable = PageRequest.of(0,5);
-    //    Page<BookCategory> page = new PageImpl<>(bookCategories, pageable, bookCategories.size());
-    //    when(bookCategoryRepository.findByCategoryName("sci-fi",pageable)).thenReturn(page);
-    //    List<Book> response = librarySystemService.findBookByCategoryName(bookCategory2.getCategoryName(),0,5);
-    //    assertEquals( page.getTotalElements(),response.size());
-    //}
 
+    @Test
+    public void findBookByCategoryNameNoBooksTest() {
+        String categoryName = "fiction";
+        int pageNumber = 0;
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<BookCategory> mockPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+        when(bookCategoryRepository.findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable))).thenReturn(mockPage);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            librarySystemService.findBookByCategoryName(categoryName, pageNumber, pageSize);
+        });
+        verify(bookCategoryRepository).findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable));
+        verify(bookCategoryRepository, never()).findByBookId(anyInt());
+    }
 
-
-        @Test
-        public void findBookByCategoryNameNoBooksTest() {
-            String categoryName = "fiction";
-            int pageNumber = 0;
-            int pageSize = 10;
-
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-            Page<BookCategory> mockPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
-
-            when(bookCategoryRepository.findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable))).thenReturn(mockPage);
-
-            Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-                librarySystemService.findBookByCategoryName(categoryName, pageNumber, pageSize);
-            });
-
-            verify(bookCategoryRepository).findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable));
-
-            verify(bookCategoryRepository, never()).findByBookId(anyInt());
-        }
-
-    //@Test
-    //public void findBookByCategoryNameTest(){
-    //    String categoryName = "fiction";
-    //    List<BookCategory> mockBookCategories = new ArrayList<>();
-    //    mockBookCategories.add(new BookCategory(1, 1));
-    //    mockBookCategories.add(new BookCategory(2, 2));
-    //    when(bookCategoryRepository.findByCategoryName(categoryName)).thenReturn(mockBookCategories);
-    //    when(librarySystemService.findByBookId(1)).thenReturn(new Book());
-    //    when(librarySystemService.findByBookId(2)).thenReturn(new Book());
-    //    List<Book> result = librarySystemService.findBookByCategoryName(categoryName);
-    //    verify(bookCategoryRepository).findByCategoryName(categoryName);
-    //    verify(bookCategoryRepository, times(2)).findByBookId(anyInt());
-    //    Assertions.assertEquals(2, result.size());
-//
-    //}
 
     @Test
     public void findBookByCategoryNameNoBooksWithOutPagenationTest() {
@@ -221,28 +181,28 @@ public class LibrarySystemServiceTest {
     }
 
     @Test
-    public void findByBookNameTest(){
+    public void findByBookNameTest() {
         List<Book> books = new ArrayList<>();
-        Book book1=new Book(1,
+        Book book1 = new Book(1,
                 "The Hound of Death",
                 "A young Englishman visiting Cornwall finds himself delving into the legend of a Belgian nun who is living as a refugee in the village."
-                ,"Agatha Christie",1933);
+                , "Agatha Christie", 1933);
         books.add(book1);
 
-        Book book2=new Book(2,
+        Book book2 = new Book(2,
                 "The Adventure of Dancing Men",
                 "The little dancing men are at the heart of a mystery which seems to be driving his young wife Elsie Patrick to distraction."
-                ,"Sir Arthur Conan Doyle",1903);
+                , "Sir Arthur Conan Doyle", 1903);
         books.add(book2);
 
         when(bookRepository.findByBookName("The Hound of Death")).thenReturn(books);
         List<Book> result = librarySystemService.findByBookName(book1.getBookName());
-        assertEquals(books,result);
+        assertEquals(books, result);
 
     }
 
     @Test
-    public void findByBookNameNotFoundTest(){
+    public void findByBookNameNotFoundTest() {
         String bookName = "Nonexistent Book";
         when(bookRepository.findByBookName(bookName)).thenReturn(new ArrayList<>());
 
@@ -265,20 +225,20 @@ public class LibrarySystemServiceTest {
     }
 
     @Test
-    public void addBookTest(){
-        Book book=new Book();
+    public void addBookTest() {
+        Book book = new Book();
         book.setAuthorName("Devdutta Pattanaik");
         book.setBookName("Jaya : An Illustrated Retelling of Mahabharata");
         book.setBookDescription("This presents precisely that fresh perspective on the epic saga of Mahabharata");
         book.setPublicationYear(2023);
         when(bookRepository.save(book)).thenAnswer(invocation -> {
-            Book book1=invocation.getArgument(0);
+            Book book1 = invocation.getArgument(0);
             book1.setBookId(1);
             return book1;
         });
-        Book savedBook=librarySystemService.addBook(book);
-        assertEquals(book.getBookId(),savedBook.getBookId());
-        assertEquals(book,savedBook);
+        Book savedBook = librarySystemService.addBook(book);
+        assertEquals(book.getBookId(), savedBook.getBookId());
+        assertEquals(book, savedBook);
     }
 
     @Test
@@ -292,7 +252,6 @@ public class LibrarySystemServiceTest {
 
         verify(bookRepository).save(mockBook);
     }
-
 
 
     @Test
@@ -349,54 +308,96 @@ public class LibrarySystemServiceTest {
         verify(bookRepository, never()).save(any(Book.class));
     }
 
+    @Test
+    public void testUpdateBookDetails_DuplicateBook() {
+        // Arrange
+        int bookId = 1;
+        Book existingBook = new Book(1,
+                "The Hound of Death",
+                "A young Englishman visiting Cornwall finds himself delving into the legend of a Belgian nun who is living as a refugee in the village."
+                , "Agatha Christie", 1933);
+        Book updatedBook = new Book(1,
+                "The Hound of Death",
+                "A young Englishman visiting Cornwall finds himself delving into the legend of a Belgian nun who is living as a refugee in the village."
+                , "Agatha Christie", 1935);
 
-       // @Test
-        public void testGetTotalBookCategoryCount() {
-            String categoryName = "fiction";
-            long expectedCount = 10;
-            when(categoryService.findByCategoryName(categoryName)).thenReturn(new Category());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(existingBook));
+        when(bookRepository.save(existingBook)).thenThrow(DataIntegrityViolationException.class);
 
-            when(bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase())).thenReturn(expectedCount);
 
-            long result = librarySystemService.getTotalBookCategoryCount(categoryName);
+        assertThrows(ResourceAlreadyExistsException.class, () -> librarySystemService.updateBookDetails(bookId, updatedBook));
 
-            verify(categoryService).findByCategoryName(categoryName);
+        verify(bookRepository, times(1)).findById(bookId);
+        verify(bookRepository, times(1)).save(existingBook);
+    }
 
-            verify(bookCategoryRepository).countBooksByCategoryName(categoryName.toLowerCase());
 
-            Assertions.assertEquals(expectedCount, result);
-        }
-
-        //@Test
-        public void testGetTotalBookCategoryCountNoBooks() {
-            String categoryName = "nonexistent category";
-            when(categoryService.findByCategoryName(categoryName)).thenReturn(new Category());
-            when(bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase())).thenReturn(0L);
-            Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-                librarySystemService.getTotalBookCategoryCount(categoryName);
-            });
-
-            verify(categoryService).findByCategoryName(categoryName);
-            verify(bookCategoryRepository).countBooksByCategoryName(categoryName.toLowerCase());
-        }
-
-    //@Test
+    @Test
     public void getTotalBookCategoryCountTest() {
         List<BookCategory> bookCategories = new ArrayList<BookCategory>();
+        bookCategories.add(new BookCategory(1, 1, "fiction"));
+        bookCategories.add(new BookCategory(2, 2, "fiction"));
+
+        BookCategory bookCategory2 = new BookCategory();
+        bookCategory2.setCategoryName("Sci-fi");
+        bookCategory2.setBookId(3);
+        bookCategory2.setId(3);
+        bookCategories.add(bookCategory2);
+
+        when(bookCategoryRepository.countBooksByCategoryName("fiction")).thenReturn(2L);
+        long serviceCount = librarySystemService.getTotalBookCategoryCount("fiction");
+        assertEquals(2L, serviceCount);
+
+        when(bookCategoryRepository.countBooksByCategoryName("Horror")).thenReturn(0L);
+        assertThrows(ResourceNotFoundException.class, () -> {
+            librarySystemService.getTotalBookCategoryCount("Horror");
+        });
+    }
+}
+
+/*
+    //@Test
+    public void findBookByCategoryNameTest(){
+        String categoryName = "fiction";
+        List<BookCategory> mockBookCategories = new ArrayList<>();
+        mockBookCategories.add(new BookCategory(1, 1));
+        mockBookCategories.add(new BookCategory(2, 2));
+        when(bookCategoryRepository.findByCategoryName(categoryName)).thenReturn(mockBookCategories);
+        when(librarySystemService.findByBookId(1)).thenReturn(new Book());
+        when(librarySystemService.findByBookId(2)).thenReturn(new Book());
+        List<Book> result = librarySystemService.findBookByCategoryName(categoryName);
+        verify(bookCategoryRepository).findByCategoryName(categoryName);
+        verify(bookCategoryRepository, times(2)).findByBookId(anyInt());
+        Assertions.assertEquals(2, result.size());
+
+    }
+
+    //@Test
+    public void findBookByCategoryNameForPagenationTest() {
+
+        List<BookCategory> bookCategories = new ArrayList<BookCategory>();
+
         bookCategories.add(new BookCategory(1,1,"fiction"));
-        bookCategories.add(new BookCategory(2,2,"fiction"));
+        bookCategories.add(new BookCategory(2,2,"sci-fi"));
+
         BookCategory bookCategory2 = new BookCategory();
         bookCategory2.setCategoryName("sci-fi");
         bookCategory2.setBookId(2);
         bookCategory2.setId(2);
         bookCategories.add(bookCategory2);
-        long repoCount=0;
-        when(bookCategoryRepository.countBooksByCategoryName("sci-fi")).thenReturn(repoCount);
-        long serviceCount=librarySystemService.getTotalBookCategoryCount("sci-fi");
-        assertEquals(repoCount,serviceCount);
 
-    }
-    }
+        Pageable pageable = PageRequest.of(0,5);
+        Page<BookCategory> page = new PageImpl<>(bookCategories, pageable, bookCategories.size());
+        when(bookCategoryRepository.findByCategoryName("sci-fi",pageable)).thenReturn(page);
+        List<Book> response = librarySystemService.findBookByCategoryName(bookCategory2.getCategoryName(),0,5);
+        assertEquals( page.getTotalElements(),response.size());
+
+
+
+
+ */
+
+
 
 
 
