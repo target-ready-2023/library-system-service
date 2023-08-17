@@ -7,6 +7,7 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Categ
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.CategoryRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,10 +18,12 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {CategoryServiceTest.class})
 public class CategoryServiceTest {
@@ -149,33 +152,29 @@ public class CategoryServiceTest {
         assertEquals(bookCategory.getCategoryName(),savedBookCategory.getCategoryName());
         assertEquals(bookCategory.getBookId(),savedBookCategory.getBookId());
     }
+
     @Test
     public void deleteBookCategoryTest(){
-        BookCategory bookCategory=new BookCategory();
-        bookCategory.setId(1);
-        bookCategory.setCategoryName("Fiction");
-        bookCategory.setBookId(1);
-
-        BookCategory bookCategory1=new BookCategory();
-        bookCategory1.setBookId(4);
-        bookCategory1.setCategoryName("Horror");
-        bookCategory1.setId(2);
-
-        List<BookCategory> bookCategoryList=new ArrayList<>();
-        bookCategoryList.add(bookCategory1);
-        bookCategoryList.add(bookCategory);
-
-        doAnswer((i) -> {
-            int id=i.getArgument(0);
-            bookCategoryList.removeIf(bookCategory3 -> bookCategory3.getId() == id);
-            return null;
-        }).when(bookCategoryRepository).deleteById(2);
-
-        String response=categoryService.deleteBookCategory(2);
-        assertEquals("Deleted",response);
-        assertEquals(1,bookCategoryList.size());
-
+        int categoryIdToDelete = 1;
+        when(bookCategoryRepository.findById(categoryIdToDelete)).thenReturn(Optional.empty());
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            categoryService.deleteBookCategory(categoryIdToDelete);
+        });
+        verify(bookCategoryRepository).findById(categoryIdToDelete);
+        reset(bookCategoryRepository);
+        when(bookCategoryRepository.findById(categoryIdToDelete)).thenReturn(Optional.of(new BookCategory()));
+        categoryService.deleteBookCategory(categoryIdToDelete);
+        verify(bookCategoryRepository).findById(categoryIdToDelete);
+        verify(bookCategoryRepository).deleteById(categoryIdToDelete);
     }
 
-
+    @Test
+    public void testFindByBookId() {
+        int bookIdToFind = 123;
+        BookCategory expectedCategory = new BookCategory();
+        when(bookCategoryRepository.findByBookId(bookIdToFind)).thenReturn(expectedCategory);
+        BookCategory result = categoryService.findByBookId(bookIdToFind);
+        verify(bookCategoryRepository).findByBookId(bookIdToFind);
+        Assertions.assertEquals(expectedCategory, result);
+    }
 }

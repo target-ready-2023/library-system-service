@@ -94,7 +94,7 @@ public class LibrarySystemService {
     }
 
     public long getTotalBookCategoryCount(String categoryName) {
-        categoryService.findByCategoryName(categoryName);
+        //categoryService.findByCategoryName(categoryName);
         long noOfBooks=bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase());
         if(noOfBooks==0){
             throw new ResourceNotFoundException("Currently no books available of this category!");

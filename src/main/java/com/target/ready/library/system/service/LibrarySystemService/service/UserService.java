@@ -83,7 +83,6 @@ public class UserService {
 
     }
 
-
     public int deleteUser(int userId) {
         if (userRepository.findByUserId(userId) == null) {
             throw new ResourceNotFoundException("User does not exist");
@@ -96,18 +95,20 @@ public class UserService {
         return userId;
     }
 
+
     public UserProfile findByUserId(int userId) {
         if (userRepository.findByUserId(userId) == null) {
             throw new ResourceNotFoundException("User does not exist");
         }
         return userRepository.findByUserId(userId);
     }
-        public List<UserProfile> getAllUsers () {
-            List<UserProfile> users = userRepository.findAll();
-            if (users.isEmpty()) {
-                throw new ResourceNotFoundException("Currently no users!");
-            }
-            return users;
+
+    public List<UserProfile> getAllUsers () {
+        List<UserProfile> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Currently no users!");
         }
+        return users;
     }
+}
 

@@ -47,12 +47,12 @@ public class CategoryService {
     }
 
     public Category findByCategoryName(String categoryName) {
-         Category categor1=categoryRepository.findByCategoryName(categoryName.toLowerCase());
+         Category category1=categoryRepository.findByCategoryName(categoryName.toLowerCase());
 
-         if(categor1==null){
+         if(category1==null){
              throw new ResourceNotFoundException("Category not found with given category name");
          }
-        return categor1;
+        return category1;
     }
 
     public BookCategory findByBookId(int bookId){
