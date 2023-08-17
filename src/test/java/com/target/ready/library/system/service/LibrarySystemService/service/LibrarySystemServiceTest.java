@@ -92,6 +92,20 @@ public class LibrarySystemServiceTest {
 
     }
 
+    //error scenario
+    @Test
+    public void getAllBooksNoBooksTest() {
+        int pageNumber = 0;
+        int pageSize = 10;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Book> emptyPage = new PageImpl<>(Collections.emptyList());
+        when(bookRepository.findAll(pageable)).thenReturn(emptyPage);
+        assertThrows(ResourceNotFoundException.class, () -> librarySystemService.getAllBooks(pageNumber, pageSize));
+        verify(bookRepository, times(1)).findAll(pageable);
+    }
+
+
     @Test
     public void getTotalBookCountTest() {
         List<Book> records = new ArrayList<Book>();
@@ -163,7 +177,6 @@ public class LibrarySystemServiceTest {
         verify(bookCategoryRepository).findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable));
         verify(bookCategoryRepository, never()).findByBookId(anyInt());
     }
-
 
     @Test
     public void findBookByCategoryNameNoBooksWithOutPagenationTest() {
