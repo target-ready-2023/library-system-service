@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -47,23 +48,44 @@ public class LibraryControllerTest {
         ResponseEntity<List<Book>> response = librarySystemController.getAllBooks(0,5);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(records.size(), response.getBody().size());
-        }
+    }
+
     @Test
     public void getTotalBookCountTest() {
-        List<Book> records = new ArrayList<Book>();
-        records.add(new Book(1,
-                "Five Point someone",
-                "Semi-autobiographical"
-                ,"Chetan Bhagat",2004));
-        records.add(new Book(2,
-                "The Silent Patient",
-                "The dangers of unresolved or improperly treated mental illness","Alex Michaelides",2019)
-        );
-        long serviceResult=0;
-        when(librarySystemService.getTotalBookCount()).thenReturn(serviceResult);
-        ResponseEntity<Long> categoryResult=librarySystemController.getTotalBookCount();
-        assertEquals(HttpStatus.OK, categoryResult.getStatusCode());
-        assertEquals(serviceResult,categoryResult.getBody());
+
+        List<Book> records = new ArrayList<>();
+        records.add(new Book(1, "Five Point Someone", "Semi-autobiographical", "Chetan Bhagat", 2004));
+        records.add(new Book(2, "The Silent Patient", "The dangers of unresolved or improperly treated mental illness", "Alex Michaelides", 2019));
+        long successResult = records.size();
+        when(librarySystemService.getTotalBookCount()).thenReturn(successResult);
+        ResponseEntity<Long> successResponse = librarySystemController.getTotalBookCount();
+
+        assertEquals(HttpStatus.OK, successResponse.getStatusCode());
+        assertEquals(successResult, successResponse.getBody());
+
+        // Error scenario
+        when(librarySystemService.getTotalBookCount()).thenThrow(new RuntimeException("Some error"));
+        ResponseEntity<Long> errorResponse = librarySystemController.getTotalBookCount();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, errorResponse.getStatusCode());
+        assertEquals(0L, errorResponse.getBody());
+    }
+
+    @Test
+    public void addBookTest() throws ResourceAlreadyExistsException {
+
+        Book inputBook = new Book();
+        inputBook.setBookName("A Song of Ice and Fire");
+        inputBook.setBookDescription("introduces readers to the fictional continents of Westeros and Essos");
+        inputBook.setAuthorName("George R.R. Martin");
+        inputBook.setPublicationYear(1996);
+        Book addedBook = new Book(1, inputBook.getBookName(), inputBook.getBookDescription(),
+                inputBook.getAuthorName(), inputBook.getPublicationYear());
+
+        when(librarySystemService.addBook(any(Book.class))).thenReturn(addedBook);
+
+        ResponseEntity<?> response = librarySystemController.addBook(inputBook);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(addedBook, response.getBody());
     }
 
     @Test
@@ -133,8 +155,8 @@ public class LibraryControllerTest {
 
 
         when(librarySystemService.findBookByCategoryName("Sci-Fi")).thenReturn(returnBooks);
-//        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName());
-//        assertEquals(response.getBody(), returnBooks);
+        ResponseEntity<List<Book>> response = librarySystemController.findBookByCategoryName(bookCategory1.getCategoryName(),0,5);
+        assertEquals(response.getBody(), returnBooks);
 
     }
     @Test
