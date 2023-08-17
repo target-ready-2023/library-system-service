@@ -64,8 +64,19 @@ public class UserController {
     public ResponseEntity<UserProfile> findByUserId(@PathVariable int userId) throws ResourceNotFoundException{
         return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
     }
-    @GetMapping("users")
-    public ResponseEntity<?> getAllUsers() throws ResourceNotFoundException{
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    @GetMapping("users/{page_number}/{page_size}")
+    public ResponseEntity<?> getAllUsers(@PathVariable int page_number, @PathVariable int page_size) throws ResourceNotFoundException{
+        return new ResponseEntity<>(userService.getAllUsers(page_number,page_size), HttpStatus.OK);
+    }
+
+    @GetMapping("AllUsers")
+    public ResponseEntity<?> fetchAllUsers() throws ResourceNotFoundException{
+        return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
+    }
+    @GetMapping("users/total_count")
+    public ResponseEntity<Long> getTotalUsersCount()  throws ResourceNotFoundException{
+            long totalCount = userService.getTotalUsersCount();
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+
     }
 }

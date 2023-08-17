@@ -3,6 +3,7 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.CategoryService;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,21 @@ public class CategoryControllerTest {
         assertEquals(HttpStatus.OK,mockController.getStatusCode());
         assertEquals(2,categoriesSize.size());
 
+    }
+
+    @Test
+    public void getTotalCategoriesCountTest() {
+
+        List<Category> myCategory = new ArrayList<>();
+        myCategory.add(new Category(1,"Horror"));
+        myCategory.add(new Category(2,"Thriller"));
+
+        long successResult = myCategory.size();
+        when(categoryService.getTotalCategoriesCount()).thenReturn(successResult);
+        ResponseEntity<Long> successResponse = categoryController.getTotalCategoriesCount();
+
+        assertEquals(HttpStatus.OK, successResponse.getStatusCode());
+        assertEquals(successResult, successResponse.getBody());
     }
 
     @Test
@@ -96,10 +112,6 @@ public class CategoryControllerTest {
         assertEquals(HttpStatus.OK,response.getStatusCode());
         assertEquals(category,response.getBody());
     }
-
-
-
-
 
     @Test
     public void addBookCategoryTest(){

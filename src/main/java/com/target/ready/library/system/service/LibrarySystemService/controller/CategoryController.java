@@ -70,13 +70,16 @@ public class CategoryController {
 
     }
 
+    @GetMapping("/categories/total_count")
+    public ResponseEntity<Long> getTotalCategoriesCount() throws ResourceNotFoundException{
+            long totalCount = categoryService.getTotalCategoriesCount();
+            return new ResponseEntity<>(totalCount, HttpStatus.OK);
+    }
 
     @GetMapping("categories/{bookId}")
     public ResponseEntity<?> findAllCategoriesByBookId(@PathVariable int bookId) throws ResourceNotFoundException{
 
             return new ResponseEntity<>(categoryService.findAllCategoriesByBookId(bookId),HttpStatus.OK);
-
-
 
     }
 

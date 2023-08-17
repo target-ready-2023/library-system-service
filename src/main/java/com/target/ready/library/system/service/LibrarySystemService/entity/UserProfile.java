@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_profile")
+@Table(name="user_profile",uniqueConstraints = @UniqueConstraint(columnNames = { "user_name", "user_role" }))
 public class UserProfile {
     @Id
     @Column(name="user_id")

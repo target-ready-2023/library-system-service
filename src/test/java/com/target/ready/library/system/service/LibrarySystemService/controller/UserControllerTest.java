@@ -1,5 +1,6 @@
 package com.target.ready.library.system.service.LibrarySystemService.controller;
 
+import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserCatalog;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
@@ -114,11 +115,38 @@ public class UserControllerTest {
         userList.add(new UserProfile(1, "User1", "Librarian"));
         userList.add(new UserProfile(2, "User2", "Student"));
 
-        when(userService.getAllUsers()).thenReturn(userList);
-        ResponseEntity<?> response = userController.getAllUsers();
+        when(userService.getAllUsers(0,5)).thenReturn(userList);
+        ResponseEntity<?> response = userController.getAllUsers(0,5);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(userList, response.getBody());
     }
 
+    @Test
+    public void fetchAllUsersTest() throws ResourceNotFoundException {
+
+        List<UserProfile> userList = new ArrayList<>();
+        userList.add(new UserProfile(1, "User1", "Librarian"));
+        userList.add(new UserProfile(2, "User2", "Student"));
+
+        when(userService.fetchAllUsers()).thenReturn(userList);
+        ResponseEntity<?> response = userController.fetchAllUsers();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(userList, response.getBody());
+    }
+
+    @Test
+    public void getTotalBookCountTest() {
+
+        List<UserProfile> userList = new ArrayList<>();
+        userList.add(new UserProfile(1, "User1", "Librarian"));
+        userList.add(new UserProfile(2, "User2", "Student"));
+        long successResult = userList.size();
+        when(userService.getTotalUsersCount()).thenReturn(successResult);
+        ResponseEntity<Long> successResponse = userController.getTotalUsersCount();
+
+        assertEquals(HttpStatus.OK, successResponse.getStatusCode());
+        assertEquals(successResult, successResponse.getBody());
+    }
 }

@@ -10,6 +10,9 @@ import com.target.ready.library.system.service.LibrarySystemService.repository.U
 import com.target.ready.library.system.service.LibrarySystemService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,12 +104,25 @@ public class UserService {
         return userRepository.findByUserId(userId);
     }
 
-    public List<UserProfile> getAllUsers () {
+    public List<UserProfile> getAllUsers (int page_number,int page_size) {
+        Pageable pageable = PageRequest.of(page_number,page_size);
+        Page<UserProfile> users = userRepository.findAll(pageable);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Currently no users!");
+        }
+        return users.toList();
+    }
+
+    public List<UserProfile> fetchAllUsers () {
         List<UserProfile> users = userRepository.findAll();
         if (users.isEmpty()) {
             throw new ResourceNotFoundException("Currently no users!");
         }
         return users;
     }
+    public long getTotalUsersCount(){
+        return userRepository.count();
+    }
+
 }
 
