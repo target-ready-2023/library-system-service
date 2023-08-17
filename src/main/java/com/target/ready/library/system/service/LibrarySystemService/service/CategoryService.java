@@ -102,6 +102,10 @@ public class CategoryService {
         return categories;
     }
 
+    public long getTotalCategoriesCount() {
+        return categoryRepository.count();
+    }
+
     public List<BookCategory> findAllCategoriesByBookId(int bookId){
         List<BookCategory> bookCategory=bookCategoryRepository.findAllCategoriesByBookId(bookId);
         if(bookCategory.isEmpty()){

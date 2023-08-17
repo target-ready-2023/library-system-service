@@ -4,6 +4,7 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 import com.target.ready.library.system.service.LibrarySystemService.controller.LibraryControllerTest;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
@@ -55,6 +56,18 @@ public class CategoryServiceTest {
         when(categoryRepository.findAll(PageRequest.of(0, 5))).thenReturn(page);
         List<Category> result = categoryService.findAllCategories(0, 5);
         assertEquals(3, result.size());
+    }
+
+    @Test
+    public void getTotalCategoriesCountTest() {
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(new Category(1, "Thriller"));
+        categoryList.add(new Category(2,"Horror"));
+        categoryList.add(new Category(3, "Suspense"));
+        long repoCount = 0;
+        when(categoryRepository.count()).thenReturn(repoCount);
+        long serviceCount = categoryService.getTotalCategoriesCount();
+        assertEquals(repoCount, serviceCount);
     }
 
     @Test

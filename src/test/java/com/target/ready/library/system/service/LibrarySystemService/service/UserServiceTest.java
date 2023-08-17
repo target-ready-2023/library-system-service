@@ -15,6 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
@@ -290,17 +294,41 @@ public class UserServiceTest {
         List<UserProfile> mockUsers = new ArrayList<>();
         mockUsers.add(new UserProfile());
         mockUsers.add(new UserProfile());
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<UserProfile> page = new PageImpl<>(mockUsers, pageable, mockUsers.size());
+        when(userRepository.findAll(pageable)).thenReturn(page);
+        List<UserProfile> result = userService.getAllUsers(0,5);
+        verify(userRepository).findAll(pageable);
+        Assertions.assertEquals(2, result.size());
+    }
+
+    @Test
+    public void fetchAllUsersTest() {
+        List<UserProfile> mockUsers = new ArrayList<>();
+        mockUsers.add(new UserProfile());
+        mockUsers.add(new UserProfile());
         when(userRepository.findAll()).thenReturn(mockUsers);
-        List<UserProfile> result = userService.getAllUsers();
+        List<UserProfile> result = userService.fetchAllUsers();
         verify(userRepository).findAll();
         Assertions.assertEquals(2, result.size());
     }
 
     @Test
+    public void getTotalUsersCountTest() {
+        List<UserProfile> mockUsers = new ArrayList<>();
+        mockUsers.add(new UserProfile());
+        mockUsers.add(new UserProfile());
+        long repoCount = 0;
+        when(userRepository.count()).thenReturn(repoCount);
+        long serviceCount = userService.getTotalUsersCount();
+        assertEquals(repoCount, serviceCount);
+    }
+    @Test
     public void getAllUsersNoUsersTest() {
         when(userRepository.findAll()).thenReturn(new ArrayList<>());
-        assertThrows(ResourceNotFoundException.class, () -> {
-            userService.getAllUsers();
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            userService.getAllUsers(0,5);
         });
         verify(userRepository).findAll();
     }
