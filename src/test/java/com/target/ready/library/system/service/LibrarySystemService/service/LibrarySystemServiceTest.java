@@ -6,6 +6,7 @@ import com.target.ready.library.system.service.LibrarySystemService.entity.Book;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Inventory;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookRepository;
@@ -25,11 +26,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -130,6 +131,20 @@ public class LibrarySystemServiceTest {
         Assertions.assertEquals(1, inventory1.getInvBookId());
     }
 
+    @Test
+    public void addInventoryAlreadyExistsTest() {
+        Inventory mockInventory = new Inventory();
+        when(inventoryRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+
+
+        Assertions.assertThrows(ResourceAlreadyExistsException.class, () -> {
+            librarySystemService.addInventory(mockInventory);
+        });
+
+
+        verify(inventoryRepository).save(mockInventory);
+    }
+
     //@Test
     //public void findBookByCategoryNameForPagenationTest() {
 //
@@ -154,7 +169,7 @@ public class LibrarySystemServiceTest {
 
 
         @Test
-        public void testFindBookByCategoryNameNoBooks() {
+        public void findBookByCategoryNameNoBooksTest() {
             String categoryName = "fiction";
             int pageNumber = 0;
             int pageSize = 10;
@@ -163,18 +178,14 @@ public class LibrarySystemServiceTest {
 
             Page<BookCategory> mockPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-            // Mocking the behavior of the bookCategoryRepository's findByCategoryName method to return an empty page
             when(bookCategoryRepository.findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable))).thenReturn(mockPage);
 
-            // Call the method to be tested and expect a ResourceNotFoundException
             Assertions.assertThrows(ResourceNotFoundException.class, () -> {
                 librarySystemService.findBookByCategoryName(categoryName, pageNumber, pageSize);
             });
 
-            // Verify that findByCategoryName was called with the correct categoryName and pageable
             verify(bookCategoryRepository).findByCategoryName(eq(categoryName.toLowerCase()), eq(pageable));
 
-            // Verify that findByBookId was not called since there are no book categories
             verify(bookCategoryRepository, never()).findByBookId(anyInt());
         }
 
@@ -195,7 +206,7 @@ public class LibrarySystemServiceTest {
     //}
 
     @Test
-    public void testFindBookByCategoryNameNoBooksWithOutPagenation() {
+    public void findBookByCategoryNameNoBooksWithOutPagenationTest() {
         String categoryName = "fiction";
         List<BookCategory> mockBookCategories = new ArrayList<>();
         when(bookCategoryRepository.findByCategoryName(categoryName.toLowerCase())).thenReturn(mockBookCategories);
@@ -208,24 +219,6 @@ public class LibrarySystemServiceTest {
 
         verify(bookCategoryRepository, never()).findByBookId(anyInt());
     }
-
-   //@Test
-    public void getTotalBookCategoryCountTest() {
-       List<BookCategory> bookCategories = new ArrayList<BookCategory>();
-       bookCategories.add(new BookCategory(1,1,"fiction"));
-       bookCategories.add(new BookCategory(2,2,"fiction"));
-       BookCategory bookCategory2 = new BookCategory();
-       bookCategory2.setCategoryName("sci-fi");
-       bookCategory2.setBookId(2);
-       bookCategory2.setId(2);
-       bookCategories.add(bookCategory2);
-       long repoCount=0;
-       when(bookCategoryRepository.countBooksByCategoryName("sci-fi")).thenReturn(repoCount);
-       long serviceCount=librarySystemService.getTotalBookCategoryCount("sci-fi");
-       assertEquals(repoCount,serviceCount);
-
-    }
-
 
     @Test
     public void findByBookNameTest(){
@@ -246,9 +239,19 @@ public class LibrarySystemServiceTest {
         List<Book> result = librarySystemService.findByBookName(book1.getBookName());
         assertEquals(books,result);
 
-        //when(bookRepository.findByBookName("The Hound")).thenReturn(Collections.emptyList());
-        //List<Book> result = libraryService.findByBookName(book1.getBookName());
-        //assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void findByBookNameNotFoundTest(){
+        String bookName = "Nonexistent Book";
+        when(bookRepository.findByBookName(bookName)).thenReturn(new ArrayList<>());
+
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            librarySystemService.findByBookName(bookName);
+        });
+
+        verify(bookRepository).findByBookName(bookName);
     }
 
     @Test
@@ -277,6 +280,21 @@ public class LibrarySystemServiceTest {
         assertEquals(book.getBookId(),savedBook.getBookId());
         assertEquals(book,savedBook);
     }
+
+    @Test
+    public void addBookAlreadyExistsTest() {
+        Book mockBook = new Book();
+        when(bookRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+
+        Assertions.assertThrows(ResourceAlreadyExistsException.class, () -> {
+            librarySystemService.addBook(mockBook);
+        });
+
+        verify(bookRepository).save(mockBook);
+    }
+
+
+
     @Test
     public void updateBookFoundTest() {
         int bookId = 1;
@@ -332,5 +350,53 @@ public class LibrarySystemServiceTest {
     }
 
 
+       // @Test
+        public void testGetTotalBookCategoryCount() {
+            String categoryName = "fiction";
+            long expectedCount = 10;
+            when(categoryService.findByCategoryName(categoryName)).thenReturn(new Category());
 
-}
+            when(bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase())).thenReturn(expectedCount);
+
+            long result = librarySystemService.getTotalBookCategoryCount(categoryName);
+
+            verify(categoryService).findByCategoryName(categoryName);
+
+            verify(bookCategoryRepository).countBooksByCategoryName(categoryName.toLowerCase());
+
+            Assertions.assertEquals(expectedCount, result);
+        }
+
+        //@Test
+        public void testGetTotalBookCategoryCountNoBooks() {
+            String categoryName = "nonexistent category";
+            when(categoryService.findByCategoryName(categoryName)).thenReturn(new Category());
+            when(bookCategoryRepository.countBooksByCategoryName(categoryName.toLowerCase())).thenReturn(0L);
+            Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+                librarySystemService.getTotalBookCategoryCount(categoryName);
+            });
+
+            verify(categoryService).findByCategoryName(categoryName);
+            verify(bookCategoryRepository).countBooksByCategoryName(categoryName.toLowerCase());
+        }
+
+    //@Test
+    public void getTotalBookCategoryCountTest() {
+        List<BookCategory> bookCategories = new ArrayList<BookCategory>();
+        bookCategories.add(new BookCategory(1,1,"fiction"));
+        bookCategories.add(new BookCategory(2,2,"fiction"));
+        BookCategory bookCategory2 = new BookCategory();
+        bookCategory2.setCategoryName("sci-fi");
+        bookCategory2.setBookId(2);
+        bookCategory2.setId(2);
+        bookCategories.add(bookCategory2);
+        long repoCount=0;
+        when(bookCategoryRepository.countBooksByCategoryName("sci-fi")).thenReturn(repoCount);
+        long serviceCount=librarySystemService.getTotalBookCategoryCount("sci-fi");
+        assertEquals(repoCount,serviceCount);
+
+    }
+    }
+
+
+

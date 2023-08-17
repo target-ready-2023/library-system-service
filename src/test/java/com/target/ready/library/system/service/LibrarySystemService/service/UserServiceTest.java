@@ -114,6 +114,65 @@ public class UserServiceTest {
     }
 
     @Test
+    public void deleteBookByUserIdUserNotFoundTest() {
+        int userId = 1;
+        int bookId = 2;
+
+        when(userRepository.findByUserId(userId)).thenReturn(null);
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            userService.deleteBookByUserId(userId, bookId);
+        });
+
+        verify(userRepository).findByUserId(userId);
+
+        verifyNoMoreInteractions(bookRepository, userCatalogRepository);
+    }
+
+    @Test
+    public void deleteBookByUserIdBookNotFoundTest() {
+        int userId = 1;
+        int bookId = 2;
+
+        UserProfile mockUserProfile = new UserProfile();
+        when(userRepository.findByUserId(userId)).thenReturn(mockUserProfile);
+        when(bookRepository.findById(bookId)).thenReturn(java.util.Optional.empty());
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            userService.deleteBookByUserId(userId, bookId);
+        });
+        verify(userRepository).findByUserId(userId);
+
+        verify(bookRepository).findById(bookId);
+
+        verifyNoMoreInteractions(userCatalogRepository);
+    }
+
+    @Test
+    public void deleteBookByUserIdCatalogNotFoundTest() {
+        int userId = 1;
+        int bookId = 2;
+
+        UserProfile mockUserProfile = new UserProfile();
+        when(userRepository.findByUserId(userId)).thenReturn(mockUserProfile);
+
+        Book mockBook = new Book();
+        when(bookRepository.findById(bookId)).thenReturn(java.util.Optional.of(mockBook));
+
+        when(userCatalogRepository.findByBookIdAndUserId(bookId, userId)).thenReturn(null);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            userService.deleteBookByUserId(userId, bookId);
+        });
+
+        verify(userRepository).findByUserId(userId);
+
+        verify(bookRepository).findById(bookId);
+
+        verify(userCatalogRepository).findByBookIdAndUserId(bookId, userId);
+
+        verifyNoMoreInteractions(userCatalogRepository);
+    }
+
+        @Test
     public void deleteUserTest(){
         int userId = 1;
 
@@ -127,7 +186,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDeleteUserNotFound() {
+    public void deleteUserNotFoundTest() {
         int userIdToDelete = 1;
 
         when(userRepository.findByUserId(userIdToDelete)).thenReturn(null);
@@ -142,8 +201,10 @@ public class UserServiceTest {
         verifyNoMoreInteractions(userRepository);
     }
 
+
+
     @Test
-    public void testDeleteUserWithBooks() {
+    public void deleteUserWithBooksTest() {
         int userIdToDelete = 1;
 
         UserProfile mockUserProfile = new UserProfile();
