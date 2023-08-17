@@ -2,6 +2,7 @@ package com.target.ready.library.system.service.LibrarySystemService.controller;
 
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserCatalog;
 import com.target.ready.library.system.service.LibrarySystemService.entity.UserProfile;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -47,20 +48,21 @@ public class UserControllerTest {
        assertEquals(HttpStatus.CREATED, response.getStatusCode());
    }
 
-//    @Test
-//    public void findBooksByUserIdTest() {
-//        int userId = 1;
-//        List<Integer> bookIds = new ArrayList<>();
-//        bookIds.add(1);
-////        when(userService.findBooksByUserId(userId)).thenReturn(bookIds);
-//
-////        ResponseEntity<List<Integer>> response = userController.findBooksByUserId(userId);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        List<Integer> responseBody = response.getBody();
-//        assertNotNull(responseBody);
-//        assertEquals(bookIds, responseBody);
-//    }
+
+    @Test
+    public void findBooksByUserIdTest() throws ResourceNotFoundException {
+
+        int userId = 1;
+        List<UserCatalog> userCatalogList = new ArrayList<>();
+        userCatalogList.add(new UserCatalog(1, userId, 1));
+        userCatalogList.add(new UserCatalog(2, userId, 2));
+
+        when(userService.findBooksByUserId(userId)).thenReturn(userCatalogList);
+        ResponseEntity<List<UserCatalog>> response = userController.findBooksByUserId(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(userCatalogList, response.getBody());
+    }
 
     @Test
     public void deleteBookByUserIdTest(){
@@ -103,6 +105,20 @@ public class UserControllerTest {
         UserProfile responseBody = response.getBody();
         assertNotNull(responseBody);
         assertEquals(user, responseBody);
+    }
+
+    @Test
+    public void getAllUsersTest() throws ResourceNotFoundException {
+
+        List<UserProfile> userList = new ArrayList<>();
+        userList.add(new UserProfile(1, "User1", "Librarian"));
+        userList.add(new UserProfile(2, "User2", "Student"));
+
+        when(userService.getAllUsers()).thenReturn(userList);
+        ResponseEntity<?> response = userController.getAllUsers();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(userList, response.getBody());
     }
 
 }
