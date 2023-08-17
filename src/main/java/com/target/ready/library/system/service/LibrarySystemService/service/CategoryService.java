@@ -89,11 +89,7 @@ public class CategoryService {
                     categoryRepository.deleteByCategoryName(categoryName);
                 }
             }
-
-
-
-
-        return "Book category deleted";
+            return "Book category deleted";
     }
 
     public List<Category> findAllCategories(int page_number, int page_size){
@@ -113,6 +109,4 @@ public class CategoryService {
         }
         return bookCategory;
     }
-
-
 }

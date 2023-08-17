@@ -4,23 +4,31 @@ package com.target.ready.library.system.service.LibrarySystemService.service;
 import com.target.ready.library.system.service.LibrarySystemService.controller.LibraryControllerTest;
 import com.target.ready.library.system.service.LibrarySystemService.entity.BookCategory;
 import com.target.ready.library.system.service.LibrarySystemService.entity.Category;
+import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceAlreadyExistsException;
 import com.target.ready.library.system.service.LibrarySystemService.exceptions.ResourceNotFoundException;
 import com.target.ready.library.system.service.LibrarySystemService.repository.BookCategoryRepository;
 import com.target.ready.library.system.service.LibrarySystemService.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
@@ -50,6 +58,18 @@ public class CategoryServiceTest {
     }
 
     @Test
+    public void findAllCategoriesNoCategoriesTest() {
+        int pageNumber = 0;
+        int pageSize = 10;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Category> emptyPage = new PageImpl<>(Collections.emptyList());
+        when(categoryRepository.findAll(pageable)).thenReturn(emptyPage);
+        assertThrows(ResourceNotFoundException.class, () -> categoryService.findAllCategories(pageNumber, pageSize));
+        verify(categoryRepository, times(1)).findAll(pageable);
+    }
+
+    @Test
     public void findAllCategoriesByBookIdTest(){
         List<BookCategory> bookCategories= new ArrayList<BookCategory>();
         int bookId=5;
@@ -60,6 +80,14 @@ public class CategoryServiceTest {
         List<BookCategory> response = categoryService.findAllCategoriesByBookId(bookId);
 
         assertEquals(2,response.size());
+    }
+
+    @Test
+    public void findAllCategoriesByBookIdNoCategoriesTest() {
+        int bookId = 1;
+        when(bookCategoryRepository.findAllCategoriesByBookId(bookId)).thenReturn(Collections.emptyList());
+        assertThrows(ResourceNotFoundException.class, () -> categoryService.findAllCategoriesByBookId(bookId));
+        verify(bookCategoryRepository, times(1)).findAllCategoriesByBookId(bookId);
     }
 
     @Test
@@ -110,21 +138,29 @@ public class CategoryServiceTest {
         assertEquals(categories.size(),1);
 
     }
+
     @Test
-    public void addCategoryTest(){
-        Category category=new Category();
+    public void addCategoryTest() {
+        Category category = new Category();
         category.setCategoryName("fiction");
         when(categoryRepository.save(category)).thenAnswer(invocation -> {
-            Category category1=invocation.getArgument(0);
+            Category category1 = invocation.getArgument(0);
             category1.setCategoryId(1);
             return category1;
         });
-        Category savedCategory=categoryService.addCategory(category);
-        assertEquals(1,savedCategory.getCategoryId());
-        assertEquals("fiction",savedCategory.getCategoryName());
+        Category savedCategory = categoryService.addCategory(category);
+        assertEquals(1, savedCategory.getCategoryId());
+        assertEquals("fiction", savedCategory.getCategoryName());
     }
 
-
+    @Test
+    public void addCategoryDuplicateNameTest() {
+        Category category = new Category();
+        category.setCategoryName("Fiction");
+        when(categoryRepository.save(category)).thenThrow(new DataIntegrityViolationException("Category already exists"));
+        assertThrows(ResourceAlreadyExistsException.class, () -> categoryService.addCategory(category));
+        verify(categoryRepository, times(1)).save(category);
+    }
 
     @Test
     public void findByCategoryNameTest(){
@@ -134,6 +170,14 @@ public class CategoryServiceTest {
         when(categoryRepository.findByCategoryName(category.getCategoryName())).thenReturn(category);
         Category savedCategory=categoryService.findByCategoryName(category.getCategoryName());
         assertEquals("fiction",savedCategory.getCategoryName());
+    }
+
+    @Test
+    public void findByCategoryNameNotFoundTest() {
+        String categoryName = "NonFiction";
+        when(categoryRepository.findByCategoryName(categoryName.toLowerCase())).thenReturn(null);
+        assertThrows(ResourceNotFoundException.class, () -> categoryService.findByCategoryName(categoryName));
+        verify(categoryRepository, times(1)).findByCategoryName(categoryName.toLowerCase());
     }
 
     @Test
@@ -154,10 +198,19 @@ public class CategoryServiceTest {
     }
 
     @Test
+    public void addBookCategoryAlreadyExistsTest() {
+        BookCategory bookCategory = new BookCategory();
+        bookCategory.setCategoryName("Fiction");
+        when(bookCategoryRepository.save(bookCategory)).thenThrow(new DataIntegrityViolationException("Category already exists"));
+        assertThrows(ResourceAlreadyExistsException.class, () -> categoryService.addBookCategory(bookCategory));
+        verify(bookCategoryRepository, times(1)).save(bookCategory);
+    }
+
+    @Test
     public void deleteBookCategoryTest(){
         int categoryIdToDelete = 1;
         when(bookCategoryRepository.findById(categoryIdToDelete)).thenReturn(Optional.empty());
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             categoryService.deleteBookCategory(categoryIdToDelete);
         });
         verify(bookCategoryRepository).findById(categoryIdToDelete);
