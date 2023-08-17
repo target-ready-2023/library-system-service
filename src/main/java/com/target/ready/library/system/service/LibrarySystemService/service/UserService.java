@@ -32,8 +32,6 @@ public class UserService {
         this.bookRepository=bookRepository;
     }
 
-
-
     public List<UserCatalog> findBooksByUserId(int userId) {
         List<UserCatalog> userCatalogs = userCatalogRepository.findByUserId(userId);
         System.out.println(userCatalogs);
